@@ -13,7 +13,7 @@
                     <NuxtLink to="/">Home</NuxtLink>
                 </li>
                 <li>
-                    <NuxtLink to="/user/post_create">Parent</NuxtLink>
+                    <NuxtLink to="/post/post_list">Posts</NuxtLink>
                 </li>
             </ul>
         </nav>
@@ -26,6 +26,7 @@
 <style>
 :root {
     --primary-color: #00c58e;
+    font-size: 1.3em;
 }
 
 body {
@@ -74,7 +75,7 @@ ul {
 li {
     margin: 0 0.5rem;
     padding: 0.6rem;
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
 }
 
 nav {
