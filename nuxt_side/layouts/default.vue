@@ -1,5 +1,8 @@
 <template>
     <div>
+        <!-- <v-app-bar >
+            <v-btn text to="/">Bulletin Board</v-btn>
+        </v-app-bar> -->
         <nav>
             <ul>
                 <li>
@@ -10,7 +13,7 @@
                     <NuxtLink to="/">Home</NuxtLink>
                 </li>
                 <li>
-                    <NuxtLink to="/">Parent</NuxtLink>
+                    <NuxtLink to="/user/post_create">Parent</NuxtLink>
                 </li>
             </ul>
         </nav>
@@ -31,6 +34,7 @@ body {
         Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     margin: 0;
     padding: 0;
+    background-color: darkcyan;
 }
 
 a {
@@ -60,7 +64,7 @@ img {
 
 ul {
     list-style-type: none;
-    padding: 0 60px;
+    padding: 15px 60px;
     display: flex;
     justify-content: left;
     flex-wrap: wrap;

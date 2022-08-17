@@ -3,59 +3,50 @@
     <h1 class="title">
       Login Form
     </h1>
-    <div class="content">
-      <form name="contact" action="" method="post">
-        <div class="section">
-          <label class="form-label" for="name">
-            Email:
-          </label>
-          <input class="form-field" type="email" name="name" id="name" />
-        </div>
-        <div class="section">
-          <label class="form-label" for="email">
-            Password:
-          </label>
-          <input class="form-field" type="password" name="email" id="email" />
-        </div>
-        <button class="form-button" type="submit">Submit</button>
-      </form>
-    </div>
+    <v-form>
+      <v-row>
+        <v-col cols="2">
+          <v-subheader>Email</v-subheader>
+        </v-col>
+        <v-col cols="8">
+          <v-text-field v-model="loginInfo.email" label="Email" :rules="[required('email'), emailFormat()]"
+            :class="{ 'my-text-style': loginInfo.email.someBool }" />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <v-subheader>Password</v-subheader>
+        </v-col>
+        <v-col cols="8">
+          <v-text-field v-model="loginInfo.password" label="Password" :rules="[required('email'), minLenght('password', 8)]"
+        type="password" />
+        </v-col>
+      </v-row>
+      
+      <v-btn name="submit-btn" @click="loginUser">Login</v-btn>
+    </v-form>
   </div>
 </template>
 
 <script>
+import validations from '@/utils/validations'
 export default {
-  name: 'IndexPage'
+  // name: 'IndexPage',
+  data() {
+    return {
+      loginInfo: {
+        email: '',
+        password: ''
+      },
+      valid: false,
+      ...validations
+    }
+  },
+  methods: {
+    loginUser() {
+      this.$router.push('/user/post_create');
+    }
+  }
 }
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  /* margin-top: 100px; */
-  padding: 0 1rem;
-  max-width: 1280px;
-  text-align: center;
-  font-size: 1.3em;
-}
-
-label {
-  padding: 50px;
-}
-
-input {
-  padding: 8px;
-  width: 400px;
-}
-
-.section {
-  display: block;
-  padding: 10px;
-}
-
-button {
-  margin-top: 20px;
-  padding: 8px 20px 8px 20px;
-  font-size: 0.8em;
-}
-</style>
