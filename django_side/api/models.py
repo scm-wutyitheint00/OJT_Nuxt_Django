@@ -4,7 +4,7 @@ from django.db import models
 class Post(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1000)
-    status = models.IntegerField()
+    status = models.IntegerField(default = 1)
     create_user_id = models.IntegerField()
     updated_user_id = models.IntegerField()
     deleted_user_id = models.IntegerField()
@@ -17,7 +17,7 @@ class User(models.Model):
     email = models.EmailField(max_length=254)
     password = models.CharField(max_length=254)
     profile = models.CharField(max_length=255)
-    type = models.CharField(max_length=1)
+    type = models.CharField(max_length=1, default = "1")
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
     dob = models.DateField()
