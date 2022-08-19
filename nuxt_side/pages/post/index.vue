@@ -12,7 +12,7 @@
         <v-btn name="submit-btn">Search</v-btn>
       </v-col>
       <v-col cols="2">
-        <v-btn name="submit-btn">Add</v-btn>
+        <v-btn name="submit-btn" @click="addPost">Add</v-btn>
       </v-col>
       <v-col cols="2">
         <v-btn name="submit-btn">Upload</v-btn>
@@ -68,6 +68,11 @@ export default {
     posts.delete = true;
     return { posts };
   },
+  methods: {
+    addPost() {
+      this.$router.push('/user/post_create');
+    }
+  }
 }
 </script>
 
