@@ -24,7 +24,6 @@
           </p>
         </v-col>
       </v-row>
-
       <v-btn name="submit-btn" @click="submitPost">Create</v-btn>
       <v-btn name="submit-btn" @click="clickCancel">Cancel</v-btn>
     </v-form>
@@ -54,9 +53,9 @@ export default {
       this.$router.push('/user/post_create');
     },
     async submitPost() {
-      let postData = this.confirmData;
-      postData.create_user_id = 1;
-      postData.created_at = new Date();
+      let postData = { title: '', description: '', create_user_id: 1}
+      postData.title = this.$store.state.posts.title;
+      postData.description = this.$store.state.posts.description;
       
       console.log(postData)
       const config = {
@@ -64,9 +63,8 @@ export default {
       };
       let formData = new FormData();
       for (let data in postData) {
-        formData.append(data, postData);
+        formData.append(data, postData[data]);
       }
-      console.log
       try {
         let response = this.$axios.$post(`/posts/`, formData, config);
         this.$router.push("/post/");

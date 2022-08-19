@@ -64,7 +64,7 @@ main {
     height: 100%;
 }
 
-a.v-btn {
+a.v-btn, .v-toolbar__title {
     margin-left: 25px;
 }
 
