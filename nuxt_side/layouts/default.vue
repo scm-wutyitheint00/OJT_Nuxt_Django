@@ -1,31 +1,28 @@
 <template>
-    <div>
-        <!-- <v-app-bar >
-            <v-btn text to="/">Bulletin Board</v-btn>
-        </v-app-bar> -->
-        <nav>
-            <ul>
-                <li>
-                    <NuxtLink to="/">Bulletin Board</NuxtLink>
-                </li>
-
-                <li>
-                    <NuxtLink to="/">Home</NuxtLink>
-                </li>
-                <li>
-                    <NuxtLink to="/post">Posts</NuxtLink>
-                </li>
-                <li>
-                    <NuxtLink to="/post/">Users</NuxtLink>
-                </li>
-            </ul>
-        </nav>
+    <v-app>
+        <v-app-bar app color="green">
+            <v-toolbar-title>Bulletin Board</v-toolbar-title>
+            <v-btn v-if="$auth.loggedIn" text to="/post">Posts</v-btn>
+            <v-btn v-if="$auth.loggedIn" text to="/">Users</v-btn>
+            <v-spacer />
+            <div v-if="$auth.loggedIn">
+                {{ $auth.user.email }}
+                <v-btn text to="/" @click="$auth.logout()">Logout</v-btn>
+            </div>
+            <div v-else>
+                <v-btn text to="/">Login</v-btn>
+                <v-btn text to="/register">Register</v-btn>
+            </div>
+        </v-app-bar>
         <main>
             <Nuxt />
         </main>
-    </div>
+    </v-app>
 </template>
-
+<script>
+export default {
+}
+</script>
 <style>
 :root {
     --primary-color: #00c58e;
@@ -38,7 +35,6 @@ body {
         Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     margin: 0;
     padding: 0;
-    background-color: darkcyan;
 }
 
 a {
@@ -54,35 +50,22 @@ a:hover {
     text-decoration: underline;
 }
 
-main {
+v-app {
     margin: 0 auto;
-    margin-top: 50px;
+
     padding: 0 1rem;
     max-width: 1280px;
+}
+
+main {
+    padding-top: 100px;
+    background-color: rgb(186, 248, 218);
     text-align: center;
+    height: 100%;
 }
 
-img {
-    margin-bottom: 1rem;
-}
-
-ul {
-    list-style-type: none;
-    padding: 15px 60px;
-    display: flex;
-    justify-content: left;
-    flex-wrap: wrap;
-    background-color: antiquewhite;
-}
-
-li {
-    margin: 0 0.5rem;
-    padding: 0.6rem;
-    /* font-size: 1.2rem; */
-}
-
-nav {
-    /* padding: 0 1rem; */
+a.v-btn {
+    margin-left: 25px;
 }
 
 a.nuxt-link-exact-active {

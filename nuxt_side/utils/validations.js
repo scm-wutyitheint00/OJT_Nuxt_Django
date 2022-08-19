@@ -1,5 +1,5 @@
 let required = (properType) => {
-    return v => v && v.length > 0 || `You must input a ${properType}`
+    return v => v && v.length > 0 || `${properType} is required`
 }
 
 let minLenght = (properType, minLenght) => {

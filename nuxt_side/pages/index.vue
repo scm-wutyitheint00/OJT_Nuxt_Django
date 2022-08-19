@@ -1,30 +1,27 @@
 <template>
-  <div class="container">
-    <h1 class="title">
-      Login Form
-    </h1>
-    <v-form>
-      <v-row>
-        <v-col cols="2">
-          <v-subheader>Email</v-subheader>
-        </v-col>
-        <v-col cols="8">
-          <v-text-field v-model="loginInfo.email" label="Email" :rules="[required('email'), emailFormat()]"
-            :class="{ 'my-text-style': loginInfo.email.someBool }" />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="2">
-          <v-subheader>Password</v-subheader>
-        </v-col>
-        <v-col cols="8">
-          <v-text-field v-model="loginInfo.password" label="Password" :rules="[required('email'), minLenght('password', 8)]"
-        type="password" />
-        </v-col>
-      </v-row>
-      
-      <v-btn name="submit-btn" @click="loginUser">Login</v-btn>
-    </v-form>
+  <div>
+    <h1>Login Form</h1>
+    <v-container>
+      <v-layout align-center justify-center>
+        <v-flex sm7>
+          <v-form>
+            <v-text-field v-model="loginInfo.email" label="Enter your e-mail address" counter
+              :rules="[required('email'), emailFormat()]"></v-text-field>
+            <v-text-field v-model="loginInfo.password" label="Enter your password"
+              :rules="[required('password'), minLenght('password', 8)]" :append-icon="
+                loginInfo.showPassword ? 'mdi-eye' : 'mdi-eye-off'
+              " :type="loginInfo.showPassword ? 'text' : 'password'" @click:append="
+              loginInfo.showPassword = !loginInfo.showPassword"></v-text-field>
+            <v-layout justify-end>
+              <a href="">Forgot Password</a>
+            </v-layout>
+            <p color="error" v-if="!loginInfo.valid">Invalid Email and Password!</p>
+            <v-btn name="submit-btn" @click="loginUser(loginInfo)">Login</v-btn>
+          </v-form>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
   </div>
 </template>
 
@@ -36,16 +33,30 @@ export default {
     return {
       loginInfo: {
         email: '',
-        password: ''
+        password: '',
+        valid: true,
+        showPassword: false,
       },
-      valid: false,
+
       ...validations
     }
   },
   methods: {
-    loginUser() {
-      this.$router.push('/user/post_create');
-    }
+    // loginUser() {
+    //   this.$router.push('/user/post_create');
+    // }
+    async loginUser(userData) {
+      try {
+        await this.$auth.loginWith('local', {
+          data: userData,
+        })
+        console.log('notification successful');
+        this.$router.push('/user/post_create');
+      } catch (error) {
+        console.log('notification unsuccessful');
+        this.loginInfo.valid = false;
+      }
+    },
   }
 }
 </script>
