@@ -25,7 +25,7 @@
         </v-col>
       </v-row>
 
-      <v-btn name="submit-btn" @click="loginUser">Create</v-btn>
+      <v-btn name="submit-btn" @click="submitPost">Create</v-btn>
       <v-btn name="submit-btn" @click="clickCancel">Cancel</v-btn>
     </v-form>
   </div>
@@ -52,7 +52,28 @@ export default {
     },
     clickCancel() {
       this.$router.push('/user/post_create');
-    }
+    },
+    async submitPost() {
+      let postData = this.confirmData;
+      postData.create_user_id = 1;
+      postData.created_at = new Date();
+      
+      console.log(postData)
+      const config = {
+        headers: { "content-type": "multipart/form-data" }
+      };
+      let formData = new FormData();
+      for (let data in postData) {
+        formData.append(data, postData);
+      }
+      console.log
+      try {
+        let response = this.$axios.$post(`/posts/`, formData, config);
+        this.$router.push("/post/");
+      } catch (e) {
+        console.log(e);
+      }
+    },
   }
 }
 </script>

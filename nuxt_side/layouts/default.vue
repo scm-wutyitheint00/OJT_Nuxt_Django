@@ -13,7 +13,10 @@
                     <NuxtLink to="/">Home</NuxtLink>
                 </li>
                 <li>
-                    <NuxtLink to="/post/post_list">Posts</NuxtLink>
+                    <NuxtLink to="/post">Posts</NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/post/">Users</NuxtLink>
                 </li>
             </ul>
         </nav>
@@ -26,7 +29,7 @@
 <style>
 :root {
     --primary-color: #00c58e;
-    font-size: 1.3em;
+    font-size: 0.9em;
 }
 
 body {
@@ -53,7 +56,7 @@ a:hover {
 
 main {
     margin: 0 auto;
-    margin-top: 100px;
+    margin-top: 50px;
     padding: 0 1rem;
     max-width: 1280px;
     text-align: center;
