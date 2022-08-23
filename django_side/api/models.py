@@ -7,7 +7,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1000)
     status = models.IntegerField(default = 1)
-    create_user_id = models.IntegerField(blank=True, null=True)
+    created_user_id = models.IntegerField(blank=True, null=True)
     updated_user_id = models.IntegerField(blank=True, null=True)
     deleted_user_id = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
@@ -23,7 +23,7 @@ class User(models.Model):
     phone = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
     dob = models.DateField()
-    create_user_id = models.IntegerField(blank=True, null=True)
+    created_user_id = models.IntegerField(blank=True, null=True)
     updated_user_id = models.IntegerField(blank=True, null=True)
     deleted_user_id = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
@@ -33,7 +33,7 @@ class User(models.Model):
 class Token(models.Model):
     email = models.EmailField(max_length=254)
     token = models.EmailField(max_length=500)
-    create_user_id = models.IntegerField(blank=True, null=True)
+    created_user_id = models.IntegerField(blank=True, null=True)
 
 class CustomUser(AbstractUser):
     username = None

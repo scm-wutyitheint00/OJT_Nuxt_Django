@@ -9,9 +9,7 @@
           <v-subheader>Title</v-subheader>
         </v-col>
         <v-col cols="8">
-          <v-text-field v-model="post.title" label="Title" 
-          :rules="[required('title'), minLenght('title', 255)]"
-             />
+          <v-text-field v-model="post.title" label="Title" :rules="[required('title')]" />
         </v-col>
       </v-row>
       <v-row>
@@ -19,9 +17,7 @@
           <v-subheader>Description</v-subheader>
         </v-col>
         <v-col cols="8">
-          <v-textarea v-model="post.description" label="Description" 
-          :rules="[required('description')]"
-        type="text" />
+          <v-textarea v-model="post.description" label="Description" :rules="[required('description')]" type="text" />
         </v-col>
       </v-row>
       <v-row>
@@ -29,16 +25,11 @@
           <v-subheader>Status</v-subheader>
         </v-col>
         <v-col cols="8">
-          <v-checkbox
-              v-model="ex4"
-              color="info"
-              value="info"
-              hide-details
-            ></v-checkbox>
+          <v-checkbox v-model="ex4" color="info" value="info" hide-details></v-checkbox>
         </v-col>
       </v-row>
-      
-      <v-btn name="submit-btn" @click="submitPost">Confirm</v-btn>
+
+      <v-btn name="submit-btn" @click="submitPost(post)">Confirm</v-btn>
       <v-btn name="submit-btn" @click="clearData">Clear</v-btn>
     </v-form>
   </div>
@@ -54,7 +45,7 @@ export default {
   },
   async asyncData({ $axios, params }) {
     try {
-      let post = await $axios.$get(`/posts/${params.id}`);
+      let post = await $axios.$get(`/posts/${params.id}`);      
       return { post };
     } catch (e) {
       return { post: [] };
@@ -63,20 +54,23 @@ export default {
   data() {
     return {
       post: {
-        name: "",
-        picture: "",
-        ingredients: "",
-        difficulty: "",
-        prep_time: null,
-        prep_guide: ""
+        title: "",
+        description: "",
+        type: "",
+        created_user_id: 1
       },
       ...validations
     };
   },
-   methods: {
-    async submitPost() {
+  methods: {
+    async submitPost(passed) {
       let editedpost = this.post
-   
+      Object.keys(editedpost).forEach(key => {
+        if (editedpost[key] === null) {
+          delete editedpost[key];
+        }
+      });
+
       const config = {
         headers: { "content-type": "multipart/form-data" }
       };

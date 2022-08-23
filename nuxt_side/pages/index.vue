@@ -51,7 +51,7 @@ export default {
           data: userData,
         })
         console.log('notification successful');
-        this.$router.push('/user/post_create');
+        this.$router.push('/post/post-create');
       } catch (error) {
         console.log('notification unsuccessful');
         this.loginInfo.valid = false;

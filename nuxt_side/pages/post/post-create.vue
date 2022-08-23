@@ -10,7 +10,7 @@
         </v-col>
         <v-col cols="8">
           <v-text-field v-model="postData.title" label="Title" 
-          :rules="[required('title'), minLenght('title', 255)]"
+          :rules="[required('title')]"
              />
         </v-col>
       </v-row>
@@ -47,8 +47,7 @@ export default {
   },
   methods: {
     confirmPost() {
-      // this.$router.push('/user/post_confirm');
-      this.$router.push({path: '/user/post_confirm'});
+      this.$router.push({path: '/post/post-confirm'});
       if(this.postData.title && this.postData.description) {
         this.$store.commit('ADD_POST', this.postData)
       }

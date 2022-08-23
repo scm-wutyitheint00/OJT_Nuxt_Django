@@ -50,10 +50,11 @@ export default {
       
     },
     clickCancel() {
-      this.$router.push('/user/post_create');
+      this.$router.push('/post/post-create');
     },
     async submitPost() {
-      let postData = { title: '', description: '', create_user_id: 1}
+      let postData = { title: '', description: '', updated_user_id: 1, 
+                      created_at: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),}
       postData.title = this.$store.state.posts.title;
       postData.description = this.$store.state.posts.description;
       

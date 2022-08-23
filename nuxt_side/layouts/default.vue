@@ -3,7 +3,7 @@
         <v-app-bar app color="green">
             <v-toolbar-title>Bulletin Board</v-toolbar-title>
             <v-btn v-if="$auth.loggedIn" text to="/post">Posts</v-btn>
-            <v-btn v-if="$auth.loggedIn" text to="/">Users</v-btn>
+            <v-btn v-if="$auth.loggedIn" text to="/user">Users</v-btn>
             <v-spacer />
             <div v-if="$auth.loggedIn">
                 {{ $auth.user.email }}

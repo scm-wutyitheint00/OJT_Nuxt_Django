@@ -21,7 +21,8 @@
         <v-btn name="submit-btn">Download</v-btn>
       </v-col>
     </v-row>
-    <v-data-table :headers="headers" :items="posts" :items-per-page="10" class="elevation-1">\
+    <v-data-table :headers="headers" :items="posts" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer
+      @page-count="pageCount = $event" class="elevation-1">\
       <template v-slot:[`item.title`]="{ item }">
         <nuxt-link :to="`/post/${item.id}/edit`"><a href="#">{{ item.title }}</a></nuxt-link>
       </template>
@@ -32,9 +33,9 @@
         <a @click="deletePost(item.id)">Delete</a>
       </template>
     </v-data-table>
-    <!-- <div class="text-center">
-      <v-pagination v-model="page" :length="6"></v-pagination>
-    </div> -->
+    <div class="text-center pt-2">
+      <v-pagination v-model="page" :length="pageCount"></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -45,6 +46,9 @@ export default {
 
   data() {
     return {
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 7,
       headers: [
         {
           text: 'Post Title',
@@ -53,7 +57,7 @@ export default {
           value: 'title'
         },
         { text: 'Post Description', value: 'description' },
-        { text: 'Posted User', value: 'create_user_id' },
+        { text: 'Posted User', value: 'updated_user_id' },
         { text: 'Posted Date', value: 'created_at' },
         { text: '', value: 'edit' },
         { text: '', value: 'delete' },
@@ -70,7 +74,7 @@ export default {
   },
   methods: {
     addPost() {
-      this.$router.push('/user/post_create');
+      this.$router.push('/post/post-create');
     },
     async deletePost(post_id) {
       try {
