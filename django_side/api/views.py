@@ -4,18 +4,24 @@ from django.http.response import JsonResponse
 from .serializers import UserSerializer, PostSerializer, CustomUserSerializer, CustomUserRetrieveSerializer
 from django.core import serializers
 from django.http import HttpResponse
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from .models import User
 from django.contrib.auth import get_user_model
 from rest_framework import permissions, viewsets
 from rest_framework import generics, permissions
+import django_filters
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['$name']
 
 class PostViewSet(viewsets.ModelViewSet):
-    serializer_class = PostSerializer
     queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['$title']
+
 
 CustomUser = get_user_model()
 
@@ -38,6 +44,15 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         return self.request.user
+
+class UserFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains')
+    email = django_filters.CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = User
+        fields = ["id", "name", "email", "profile", "type", "phone", "address", "dob",
+              "updated_user_id", "deleted_user_id", "created_at", "updated_at", "deleted_at"]
 
 
 def index(request):

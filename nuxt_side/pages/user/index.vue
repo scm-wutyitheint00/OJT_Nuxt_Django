@@ -6,10 +6,10 @@
     </h1>
     <v-row>
       <v-col cols="2.5">
-        <v-text-field label="Name" />
+        <v-text-field v-model="search_term.name" label="Name" />
       </v-col>
       <v-col cols="2.5">
-        <v-text-field label="Email" />
+        <v-text-field v-model="search_term.email" label="Email" />
       </v-col>
       <v-col cols="2.5">
         <v-dialog ref="dialog" v-model="searchData.modal" :return-value.sync="date" persistent width="290px">
@@ -46,7 +46,7 @@
         </v-dialog>
       </v-col>
       <v-col cols="1">
-        <v-btn name="submit-btn">Search</v-btn>
+        <v-btn @click="searchUser()" name="submit-btn">Search</v-btn>
       </v-col>
       <v-col cols="1">
         <v-btn name="submit-btn" @click="addUser">Add</v-btn>
@@ -79,7 +79,7 @@
         {{ item.updated_at }}
       </template>
       <template v-slot:[`item.delete`]="{ item }">
-        <a @click="deletePost(item.id)">Delete</a>
+        <a @click="deleteUser(item.id)">Delete</a>
       </template>
     </v-data-table>
     <div class="text-center pt-2">
@@ -121,9 +121,11 @@ export default {
         modal: false,
         modal2: false,
         menu2: false,
-      }
+      },
+      search_term: { name: '', email: ''}
     }
   },
+
   async asyncData({ $axios, params }) {
     // try {
     let users = await $axios.$get(`/users/`);
@@ -135,14 +137,18 @@ export default {
     addUser() {
       this.$router.push('/user/user-create');
     },
-    async deletePost(user_id) {
+    async deleteUser(user_id) {
       try {
         await this.$axios.$delete(`/users/${user_id}/`); // delete recipe
-        let newRecipes = await this.$axios.$get("/users/"); // get new list of recipes
-        this.users = newRecipes; // update list of recipes
+        let remainUser = await this.$axios.$get("/users/"); // get new list of recipes
+        this.users = remainUser; // update list of recipes
       } catch (e) {
         console.log(e);
       }
+    },
+    async searchUser() {
+      let searchUser = await this.$axios.$get(`/users?search=${this.search_term}`); // get new list of recipes
+      this.users = searchUser;
     }
   }
 }

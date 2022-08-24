@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserViewSet, PostViewSet, CustomUserModelViewSet, UserRetrieveUpdateDestroyAPIView
-
+from .views import UserViewSet, PostViewSet, CustomUserModelViewSet, UserRetrieveUpdateDestroyAPIView, UserFilter
+from django_filters.views import FilterView
 from . import views
 
 
@@ -9,7 +9,6 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'posts', PostViewSet)
 router.register(r'customuser', CustomUserModelViewSet)
-
 
 urlpatterns = [
     # path('', views.index, name='index'),
