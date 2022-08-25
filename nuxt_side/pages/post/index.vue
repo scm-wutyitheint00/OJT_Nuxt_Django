@@ -24,8 +24,8 @@
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <v-data-table :headers="csvHeaders" :items="csvDatas" :page.sync="page" hide-default-footer
-                @page-count="pageCount = $event" class="elevation-1">
+              <v-data-table :headers="csvHeaders" :items="csvDatas" :page.sync="page" @page-count="pageCount = $event"
+                class="elevation-1">
               </v-data-table>
             </v-card-text>
             <v-divider></v-divider>
@@ -42,10 +42,10 @@
         </v-dialog>
         <v-dialog v-model="confirmDialog" persistent max-width="290">
           <v-card>
-            <v-card-title>CSV creation successed!</v-card-title>
+            <v-card-title><span class="text-subtitle-1 text--primary">CSV creation successed!</span></v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="confirmDialog = false">
+              <v-btn color="green darken-1" text @click="clickOK()">
                 OK
               </v-btn>
             </v-card-actions>
@@ -65,13 +65,12 @@
         <nuxt-link :to="`/post/${item.id}/edit`"><a href="#">Edit</a></nuxt-link>
       </template>
       <template v-slot:[`item.delete`]="{ item }">
-        <a @click="deletePost(item.id)">Delete</a>
+        <a @click="deleteId = item.id, deleteDialog = true">Delete</a>
       </template>
     </v-data-table>
     <div class="text-center pt-2">
       <v-pagination v-model="page" :length="pageCount"></v-pagination>
     </div>
-
     <v-dialog v-model="detailDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
@@ -84,7 +83,7 @@
                 <span class="text-subtitle-1 text--primary">Title</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.postDetail.title}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.postDetail.title }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -92,7 +91,7 @@
                 <span class="text-subtitle-1 text--primary">Description</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.postDetail.description}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.postDetail.description }}</span>
               </v-col>
             </v-row>
           </v-container>
@@ -105,9 +104,22 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="deleteDialog" persistent max-width="290">
+      <v-card>
+        <v-card-title><span class="text-subtitle-1 text--primary">Are you sure to delete?</span></v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="deleteDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="deletePost()">
+            Yes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
-
 <script>
 window.axios = require('axios');
 import exportFromJSON from "export-from-json";
@@ -120,6 +132,8 @@ export default {
       dialog: false,
       confirmDialog: false,
       detailDialog: false,
+      deleteDialog: false,
+      deleteId: null,
       csvDatas: [],
       csvHeaders: [
         { text: 'Post Title', value: 'title' },
@@ -153,14 +167,14 @@ export default {
       this.$router.push('/post/post-create');
     },
     async searchPost() {
-      console.log(this.search_term)
       let newPosts = await this.$axios.$get(`/posts?search=${this.search_term}`);
       this.posts = newPosts;
     },
-    async deletePost(post_id) {
+    async deletePost() {
       try {
-        await this.$axios.$delete(`/posts/${post_id}/`);
+        await this.$axios.$delete(`/posts/${this.deleteId}/`);
         let newPosts = await this.$axios.$get(`/posts/`);
+        this.deleteDialog = false;
         this.posts = newPosts;
       } catch (e) {
         console.log(e);
@@ -186,6 +200,7 @@ export default {
           let response = this.$axios.$post(`/posts/`, formData, config);
           if (response) {
             this.confirmDialog = true;
+            this.csvDatas = [];
           }
           this.$router.push("/post/");
         } catch (e) {
@@ -220,7 +235,7 @@ export default {
         const csvTsvMatch = file?.type.match(/^text\/(csv|tab-separated-values)/gi);
 
         if (!file || (!xlsxMatch && !csvTsvMatch && !file.name.match(/\.(xlsx|csv)$/gi))) {
-          console.error('file name type')
+          console.error('file name type');
           alert("Canno't read file !");
         } else {
           reader.readAsText(e.target.files[0]);
@@ -244,6 +259,10 @@ export default {
     async showPostDetail(postId) {
       this.postDetail = await this.$axios.$get(`/posts/${postId}`);
       this.detailDialog = true;
+    },
+    async clickOK() {
+      this.confirmDialog = false;
+      this.posts = await this.$axios.$get(`/posts/`);
     }
   }
 }

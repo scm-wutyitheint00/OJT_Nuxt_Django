@@ -80,7 +80,7 @@
         {{ item.updated_at }}
       </template>
       <template v-slot:[`item.delete`]="{ item }">
-        <a @click="deleteUser(item.id)">Delete</a>
+        <a @click="deleteId = item.id, deleteDialog = true">Delete</a>
       </template>
     </v-data-table>
     <div class="text-center pt-2">
@@ -152,6 +152,20 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="deleteDialog" persistent max-width="290">
+      <v-card>
+        <v-card-title><span class="text-subtitle-1 text--primary">Are you sure to delete?</span></v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="deleteDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="deleteUser()">
+            Yes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -166,6 +180,8 @@ export default {
       pageCount: 0,
       itemsPerPage: 7,
       detailDialog: false,
+      deleteDialog: false,
+      deleteId: null,
       userDetail: {},
       headers: [
         {
@@ -205,11 +221,12 @@ export default {
     addUser() {
       this.$router.push('/user/user-create');
     },
-    async deleteUser(user_id) {
+    async deleteUser() {
       try {
-        await this.$axios.$delete(`/users/${user_id}/`); // delete recipe
-        let remainUser = await this.$axios.$get("/users/"); // get new list of recipes
-        this.users = remainUser; // update list of recipes
+        await this.$axios.$delete(`/users/${this.deleteId}/`); 
+        let remainUser = await this.$axios.$get("/users/"); 
+        this.deleteDialog = false;
+        this.users = remainUser; 
       } catch (e) {
         console.log(e);
       }
