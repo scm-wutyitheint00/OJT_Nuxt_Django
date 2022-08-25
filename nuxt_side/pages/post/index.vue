@@ -59,7 +59,7 @@
     <v-data-table :headers="headers" :items="posts" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer
       @page-count="pageCount = $event" class="elevation-1">\
       <template v-slot:[`item.title`]="{ item }">
-        <nuxt-link :to="`/post/${item.id}/edit`"><a href="#">{{ item.title }}</a></nuxt-link>
+        <a href="#" @click="showPostDetail(item.id)">{{ item.title }}</a>
       </template>
       <template v-slot:[`item.edit`]="{ item }">
         <nuxt-link :to="`/post/${item.id}/edit`"><a href="#">Edit</a></nuxt-link>
@@ -71,6 +71,40 @@
     <div class="text-center pt-2">
       <v-pagination v-model="page" :length="pageCount"></v-pagination>
     </div>
+
+    <v-dialog v-model="detailDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Post Detail</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container fill-height fluid>
+            <v-row justify="center">
+              <v-col cols="3">
+                <span class="text-subtitle-1 text--primary">Title</span>
+              </v-col>
+              <v-col cols="7">
+                <span class="text-subtitle-1 text--primary">{{this.postDetail.title}}</span>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="3">
+                <span class="text-subtitle-1 text--primary">Description</span>
+              </v-col>
+              <v-col cols="7">
+                <span class="text-subtitle-1 text--primary">{{this.postDetail.description}}</span>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="detailDialog = false">
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -85,6 +119,7 @@ export default {
       itemsPerPage: 7,
       dialog: false,
       confirmDialog: false,
+      detailDialog: false,
       csvDatas: [],
       csvHeaders: [
         { text: 'Post Title', value: 'title' },
@@ -103,7 +138,8 @@ export default {
         { text: '', value: 'delete' },
       ],
       posts: [],
-      search_term: ''
+      search_term: '',
+      postDetail: {}
     }
   },
   async asyncData({ $axios, params }) {
@@ -204,6 +240,10 @@ export default {
       const fileName = `post-list_${downloadData}.csv`;
       const exportType = exportFromJSON.types.csv;
       if (data) exportFromJSON({ data, fileName, exportType });
+    },
+    async showPostDetail(postId) {
+      this.postDetail = await this.$axios.$get(`/posts/${postId}`);
+      this.detailDialog = true;
     }
   }
 }

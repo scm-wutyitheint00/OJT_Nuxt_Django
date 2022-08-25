@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-
     <v-form>
       <v-row>
         <h1 class="title">
@@ -64,9 +63,9 @@
           <v-subheader>Date of Birth</v-subheader>
         </v-col>
         <v-col class="ma-0 pa-3" cols="8">
-          <v-dialog ref="dialog" v-model="user.modal" :return-value.sync="date" persistent width="290px">
+          <v-dialog ref="dialog" v-model="user.modal" :return-value.sync="user.dob" persistent width="290px">
             <template v-slot:activator="{ on, attrs }">
-              <v-text-field v-model="user.dob" label="Pick a date" prepend-icon="mdi-calendar" readonly v-bind="attrs"
+              <v-text-field clearable @click:clear="user.dob = null" v-model="user.dob" label="Pick a date" prepend-icon="mdi-calendar" readonly v-bind="attrs"
                 v-on="on"></v-text-field>
             </template>
             <v-date-picker v-model="user.dob" scrollable>
@@ -111,14 +110,7 @@ export default {
       title: "View Post"
     };
   },
-  // items: () => ({
-  //   items: [
-  //     { title: 'Click Me' },
-  //     { title: 'Click Me' },
-  //     { title: 'Click Me' },
-  //     { title: 'Click Me 2' },
-  //   ],
-  // }),
+
   async asyncData({ $axios, params }) {
     // let user = {
     //     name: '',
@@ -141,7 +133,7 @@ export default {
         confirmPassword: '',
         type: '',
         phone: '',
-        dob: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+        dob: '',
         address: '',
         profile: '',
         // type: [admin, user],
