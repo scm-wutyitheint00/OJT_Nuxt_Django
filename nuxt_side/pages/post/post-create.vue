@@ -6,20 +6,20 @@
     <v-form>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Title</v-subheader>
+          <v-subtitle>Title</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <v-text-field v-model="postData.title" label="Title" 
+          <v-text-field outlined v-model="postData.title" label="Title" 
           :rules="[required('title')]"
              />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Description</v-subheader>
+          <v-subtitle>Description</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <v-textarea v-model="postData.description" label="Description" 
+          <v-textarea outlined v-model="postData.description" label="Description" 
           :rules="[required('description')]"
         type="text" />
         </v-col>
