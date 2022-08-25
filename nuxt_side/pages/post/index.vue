@@ -1,4 +1,3 @@
-
 <template>
   <div class="container">
     <h1>
@@ -15,19 +14,13 @@
         <v-btn name="submit-btn" @click="addPost">Add</v-btn>
       </v-col>
       <v-col cols="2">
-
-        <!-- <template v-slot:activator="{  }"> -->
         <input type="file" ref="file" style="display: none" id="csv_file" name="csv_file" class="form-control"
           @change="loadCSV($event)" />
         <v-btn @click="$refs.file.click()">Upload</v-btn>
-        <!-- </template> -->
         <v-dialog v-model="dialog" width="500">
-
-
-
           <v-card>
             <v-card-title class="text-h5 grey lighten-2">
-              Privacy Policy
+              Post Information
             </v-card-title>
 
             <v-card-text>
@@ -40,14 +33,23 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="dialog = false">
-                I accept
+              <v-btn color="primary" text @click="createCSV()">
+                OK
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-
-
+        <v-dialog v-model="confirmDialog" persistent max-width="290">
+          <v-card>
+            <v-card-title>CSV creation successed!</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="confirmDialog = false">
+                OK
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-col>
       <v-col cols="2">
         <v-btn name="submit-btn">Download</v-btn>
@@ -75,13 +77,13 @@
 window.axios = require('axios');
 
 export default {
-
   data() {
     return {
       page: 1,
       pageCount: 0,
       itemsPerPage: 7,
       dialog: false,
+      confirmDialog: false,
       csvDatas: [],
       csvHeaders: [{
         text: 'Post Title', align: 'start',
@@ -105,8 +107,6 @@ export default {
     }
   },
   async asyncData({ $axios, params }) {
-    // try {
-    // console.log(this.search_term)
     let posts = await $axios.$get(`/posts/`);
     posts.edit = true;
     posts.delete = true;
@@ -130,32 +130,55 @@ export default {
         console.log(e);
       }
     },
+    async createCSV() {
+      console.log('csv data', this.csvDatas)
+
+      this.dialog = false;
+
+      this.csvDatas.forEach(data => {
+        let postData = {
+          title: '', description: '', updated_user_id: 1,
+          created_at: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+        }
+        postData.title = data.title;
+        postData.description = data.description;
+
+        console.log(postData)
+        const config = {
+          headers: { "content-type": "multipart/form-data" }
+        };
+        let formData = new FormData();
+        for (let data in postData) {
+          formData.append(data, postData[data]);
+        }
+        try {
+          let response = this.$axios.$post(`/posts/`, formData, config);
+          if (response) {
+            this.confirmDialog = true;
+          }
+          this.$router.push("/post/");
+        } catch (e) {
+          console.log(e);
+        }
+      })
+
+    },
     csvJSON(csv) {
       var vm = this
-      var lines = csv.split("\n")
-      var headers = lines[0].split(",")
-
-      vm.parse_header = lines[0].split(",")
-      // lines[0].split(",").forEach(function (key) {
-      //   vm.sortOrders[key] = 1
-      // })
-      const result = []
-      lines.map(function (line, indexLine) {
-        if (indexLine < 1) return // Jump header line
-        var obj = {}
-        var currentline = line.split(",")
-        headers.forEach((header, indexHeader) => {
-          obj[header] = currentline[indexHeader]
-        })
-        result.push(obj);
+      const lines = csv.split('\n') // 1️
+      lines.forEach(element => {
+        element.replaceAll('"', '');
+      });
+      const header = lines[0].split(',') // 2️
+      const output = lines.slice(1).map(line => {
+        const fields = line.split(',') // 3️
+        return Object.fromEntries(header.map((h, i) => [h, fields[i]])) // 4️
       })
-      if (result.length > 0) {
-        console.log(result)
+      if (output.length > 0) {
         this.dialog = true;
-        this.csvDatas = result;
+        this.csvDatas = output;
       }
-      // result.pop() // remove the last item because undefined values
-      return result // JavaScript object
+      return output // JavaScript object
     },
     loadCSV(e) {
       var vm = this
@@ -170,21 +193,11 @@ export default {
           alert("Canno't read file !");
         } else {
           reader.readAsText(e.target.files[0]);
-          
-          // Handle errors load
           reader.onload = function (event) {
-            console.log('readerrrr', event.target)
             var csv = event.target.result;
-                        console.log('--------', csv)
-
-            csv.replace(/^"(.+(?="$))"$/, '$1');
-                        console.log('--------', csv)
-
-            vm.parse_csv = vm.csvJSON(csv)
+            vm.parse_csv = vm.csvJSON(csv.replaceAll('"', ''))
           };
         }
-
-
       } else {
         alert('FileReader are not supported in this browser.');
       }
