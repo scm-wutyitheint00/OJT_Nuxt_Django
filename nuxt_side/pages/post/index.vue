@@ -22,17 +22,18 @@
             <v-card-title class="text-h5 grey lighten-2">
               Post Information
             </v-card-title>
-
+            <v-divider></v-divider>
             <v-card-text>
               <v-data-table :headers="csvHeaders" :items="csvDatas" :page.sync="page" hide-default-footer
-                @page-count="pageCount = $event" class="elevation-1">\
+                @page-count="pageCount = $event" class="elevation-1">
               </v-data-table>
             </v-card-text>
-
             <v-divider></v-divider>
-
             <v-card-actions>
               <v-spacer></v-spacer>
+              <v-btn color="warn" text @click="dialog = false">
+                Cancel
+              </v-btn>
               <v-btn color="primary" text @click="createCSV()">
                 OK
               </v-btn>
@@ -52,7 +53,7 @@
         </v-dialog>
       </v-col>
       <v-col cols="2">
-        <v-btn name="submit-btn">Download</v-btn>
+        <v-btn name="submit-btn" @click="downloadCSVData()">Download</v-btn>
       </v-col>
     </v-row>
     <v-data-table :headers="headers" :items="posts" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer
@@ -75,7 +76,7 @@
 
 <script>
 window.axios = require('axios');
-
+import exportFromJSON from "export-from-json";
 export default {
   data() {
     return {
@@ -85,10 +86,9 @@ export default {
       dialog: false,
       confirmDialog: false,
       csvDatas: [],
-      csvHeaders: [{
-        text: 'Post Title', align: 'start',
-        sortable: false, value: 'title'
-      }, { text: 'Post Description', value: 'description' },],
+      csvHeaders: [
+        { text: 'Post Title', value: 'title' },
+        { text: 'Post Description', value: 'description' }],
       headers: [
         {
           text: 'Post Title',
@@ -118,23 +118,20 @@ export default {
     },
     async searchPost() {
       console.log(this.search_term)
-      let newPosts = await this.$axios.$get(`/posts?search=${this.search_term}`); // get new list of recipes
+      let newPosts = await this.$axios.$get(`/posts?search=${this.search_term}`);
       this.posts = newPosts;
     },
     async deletePost(post_id) {
       try {
-        await this.$axios.$delete(`/posts/${post_id}/`); // delete recipe
-        let newPosts = await this.$axios.$get(`/posts/`); // get new list of recipes
-        this.posts = newPosts; // update list of recipes
+        await this.$axios.$delete(`/posts/${post_id}/`);
+        let newPosts = await this.$axios.$get(`/posts/`);
+        this.posts = newPosts;
       } catch (e) {
         console.log(e);
       }
     },
     async createCSV() {
-      console.log('csv data', this.csvDatas)
-
       this.dialog = false;
-
       this.csvDatas.forEach(data => {
         let postData = {
           title: '', description: '', updated_user_id: 1,
@@ -142,8 +139,6 @@ export default {
         }
         postData.title = data.title;
         postData.description = data.description;
-
-        console.log(postData)
         const config = {
           headers: { "content-type": "multipart/form-data" }
         };
@@ -161,7 +156,6 @@ export default {
           console.log(e);
         }
       })
-
     },
     csvJSON(csv) {
       var vm = this
@@ -184,9 +178,10 @@ export default {
       var vm = this
       if (window.FileReader) {
         let file = e.target.files[0];
+        if (!file) { return }
         var reader = new FileReader();
-        const xlsxMatch = file.type.match(/^application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet$/gi);
-        const csvTsvMatch = file.type.match(/^text\/(csv|tab-separated-values)/gi);
+        const xlsxMatch = file?.type.match(/^application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet$/gi);
+        const csvTsvMatch = file?.type.match(/^text\/(csv|tab-separated-values)/gi);
 
         if (!file || (!xlsxMatch && !csvTsvMatch && !file.name.match(/\.(xlsx|csv)$/gi))) {
           console.error('file name type')
@@ -201,6 +196,14 @@ export default {
       } else {
         alert('FileReader are not supported in this browser.');
       }
+    },
+    async downloadCSVData() {
+      let posts = await this.$axios.$get(`/posts/`);
+      const data = posts;
+      const downloadData = new Date().toLocaleDateString(['ban', 'id']);
+      const fileName = `post-list_${downloadData}.csv`;
+      const exportType = exportFromJSON.types.csv;
+      if (data) exportFromJSON({ data, fileName, exportType });
     }
   }
 }
