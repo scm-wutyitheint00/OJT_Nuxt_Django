@@ -50,11 +50,11 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: 'http://localhost:8000/dj-rest-auth/login/',
+            url: 'http://localhost:8000/token/login/',
             method: 'post',
             propertyName: 'auth_token',
           },
-          logout: { url: 'http://localhost:8000/dj-rest-auth/logout/', method: 'post' },
+          logout: { url: 'http://localhost:8000/token/logout/', method: 'post' },
           user: {
             url: '/data/',
             method: 'get',

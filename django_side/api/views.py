@@ -13,7 +13,7 @@ import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated 
 class UserViewSet(viewsets.ModelViewSet):
-    # permission_classes = (IsAuthenticated,)  
+    permission_classes = (IsAuthenticated,)  
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend]
@@ -43,7 +43,7 @@ class CustomUserModelViewSet(viewsets.ModelViewSet):
 class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserRetrieveSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 
     def get_object(self):

@@ -37,7 +37,6 @@ export default {
         password: '',
         valid: true,
         showPassword: false,
-        // username: 'Thoe Saung'
       },
       loginData: {
         logintime: '',
