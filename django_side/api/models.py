@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from . import managers
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+from rest_framework.authtoken.models import Token as AuthToken
 class Post(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1000)
@@ -36,6 +38,14 @@ class Token(models.Model):
     email = models.EmailField(max_length=254)
     token = models.EmailField(max_length=500)
     created_user_id = models.IntegerField(blank=True, null=True)
+# class Token(AuthToken):
+#     key = models.CharField("Key", max_length=40, db_index=True, unique=True)
+#     user = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         related_name="auth_token",
+#         on_delete=models.CASCADE,
+#         verbose_name="customUser",
+#     )
 
 
 class CustomUser(AbstractUser):

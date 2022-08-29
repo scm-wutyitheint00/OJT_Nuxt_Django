@@ -1,6 +1,7 @@
 export const state = () => ({
   posts: {},
-  user: {}
+  user: {},
+  loginData: {},
 })
 
 export const mutations = ({
@@ -19,6 +20,9 @@ export const mutations = ({
       address: user.address,
       profile: user.profile
     }
+  },
+  ADD_LOGIN_DATA(state, datas) {
+    state.loginData = datas;
   }
 })
 
@@ -28,5 +32,14 @@ export const getters = {
   },
   getUser(state) {
     return state.user
+  },
+  isAuthenticated(state) {
+    return state.auth.loggedIn
+  },
+  loggedInUser(state) {
+    return state.auth.user
+  },
+  getLoginData(state) {
+    return state.loginData
   }
 }

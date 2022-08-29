@@ -11,13 +11,16 @@ from rest_framework import permissions, viewsets
 from rest_framework import generics, permissions
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)  
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['name', 'email']
 
 class PostViewSet(viewsets.ModelViewSet):
+    # permission_classes = (IsAuthenticated,)  
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     filter_backends = [filters.SearchFilter]
@@ -56,10 +59,6 @@ class UserFilter(django_filters.FilterSet):
               "updated_user_id", "deleted_user_id", "created_at", "updated_at", "deleted_at"]
 
 
-def list_food_composition(request,food):
-     foods = Post.objects.filter(title__contains=food)
-     data = serializers.serialize('json', foods)
-     return JsonResponse({'data': data}, content_type='application/json')
 
 def index(request):
     return HttpResponse("Hello, world. You're at the Api index.")

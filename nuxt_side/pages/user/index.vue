@@ -267,7 +267,6 @@ export default {
 h1 {
   margin-bottom: 50px;
 }
-
 a {
   color: blue;
   text-decoration: underline;

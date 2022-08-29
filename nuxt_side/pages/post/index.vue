@@ -118,12 +118,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    
   </div>
 </template>
 <script>
 window.axios = require('axios');
 import exportFromJSON from "export-from-json";
+
 export default {
+  middleware: "auth",
   data() {
     return {
       page: 1,
@@ -153,7 +156,8 @@ export default {
       ],
       posts: [],
       search_term: '',
-      postDetail: {}
+      postDetail: {},
+      datalogin : this.$store.getLoginData
     }
   },
   async asyncData({ $axios, params }) {
@@ -169,6 +173,7 @@ export default {
     async searchPost() {
       let newPosts = await this.$axios.$get(`/posts?search=${this.search_term}`);
       this.posts = newPosts;
+      
     },
     async deletePost() {
       try {

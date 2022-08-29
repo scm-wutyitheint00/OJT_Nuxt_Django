@@ -18,6 +18,8 @@ export default {
     ]
   },
 
+  middleware: ["auth"],
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],
@@ -52,7 +54,7 @@ export default {
             method: 'post',
             propertyName: 'auth_token',
           },
-          logout: { url: 'token/logout/', method: 'post' },
+          logout: { url: 'http://localhost:8000/token/logout/', method: 'post' },
           user: {
             url: '/data/',
             method: 'get',
@@ -61,6 +63,11 @@ export default {
         },
         tokenType: 'Token',
         tokenName: 'Authorization',
+        token: {
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 10
+        },
       },
       redirect: {
         login: '/login',
