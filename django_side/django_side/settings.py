@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-
+import datetime
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,10 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', 
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
     'corsheaders', 
     'django_side' ,
-    'django_filters'
+    'django_filters',
+    'dj_rest_auth'
 ]
 
 MIDDLEWARE = [
@@ -138,11 +139,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # add this
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api.CustomUser'
+REST_AUTH_TOKEN_MODEL = "api.models.Token"
+REST_AUTH_TOKEN_CREATOR = "api.utils.custom_create_token"
+TOKEN_TTL = datetime.timedelta(days=15)
+REST_USE_JWT = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'api.authentication.ExpiringTokenAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -152,3 +158,5 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
 }
+
+
