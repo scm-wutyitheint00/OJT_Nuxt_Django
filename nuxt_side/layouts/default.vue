@@ -6,8 +6,8 @@
             <v-btn v-if="$auth.loggedIn" text to="/user">Users</v-btn>
             <v-spacer />
             <div v-if="$auth.loggedIn">
-                {{ $auth.user.email }}
-                <v-btn text to="/" @click="$auth.logout()">Logout</v-btn>
+                {{  $auth.user.email  }}
+                <v-btn text to="/" @click="logout()">Logout</v-btn>
             </div>
             <div v-else>
                 <v-btn text to="/login">Login</v-btn>
@@ -17,10 +17,48 @@
         <main>
             <Nuxt />
         </main>
+        <v-dialog v-model="showDialog" persistent max-width="400">
+            <v-card>
+                <v-card-title><span class="text-subtitle-1 text--primary">As login time is passed 1 hour, please login
+                        again..</span></v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="showDialog = false">
+                        OK
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-app>
 </template>
 <script>
 export default {
+    created() {
+        const lastOperationDate = sessionStorage.getItem('lastOperationDate')
+        if (!lastOperationDate) {
+            return
+        }
+        const operationtime = Date.now() - new Date(lastOperationDate).getTime();
+        console.log(operationtime)
+        const inHour = Math.floor(operationtime / (1000 * 60 * 60));
+        console.log(inHour)
+        if (inHour > 1) {
+            this.$auth.logout();
+            sessionStorage.clear();
+            this.showDialog = true
+        }
+    },
+    data() {
+        return {
+            showDialog: false
+        }
+    },
+    methods: {
+        logout() {
+            this.$auth.logout();
+            sessionStorage.clear();
+        }
+    }
 }
 </script>
 <style>
@@ -64,7 +102,8 @@ main {
     height: 100%;
 }
 
-a.v-btn, .v-toolbar__title {
+a.v-btn,
+.v-toolbar__title {
     margin-left: 25px;
 }
 

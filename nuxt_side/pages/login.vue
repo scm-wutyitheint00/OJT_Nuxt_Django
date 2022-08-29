@@ -29,7 +29,7 @@ loginInfo.showPassword = !loginInfo.showPassword"></v-text-field>
 import validations from '@/utils/validations'
 export default {
   // name: 'IndexPage',
-  
+
   data() {
     return {
       loginInfo: {
@@ -46,22 +46,14 @@ export default {
     }
   },
   methods: {
-    // loginUser() {
-    //   this.$router.push('/user/post_create');
-    // }
     async loginUser(userData) {
       try {
         await this.$auth.loginWith('local', {
           data: userData,
         }).then(data => {
-          console.log('login', data);
-          if (data && data.data.auth_token) {
-            localStorage.setItem("operationDate", new Date().toString());
-            this.$router.push('/post');
-          }
+          sessionStorage.setItem("lastOperationDate", new Date().toString());
+          this.$router.push('/post');
         })
-        
-
       } catch (error) {
         this.loginInfo.valid = false;
       }
