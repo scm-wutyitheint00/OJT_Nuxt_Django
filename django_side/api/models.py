@@ -4,17 +4,6 @@ from django.contrib.auth.models import AbstractUser
 from . import managers
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-class Post(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=1000)
-    status = models.IntegerField(default=1)
-    created_user_id = models.IntegerField(blank=True, null=True)
-    updated_user_id = models.IntegerField(blank=True, null=True)
-    deleted_user_id = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
-
 
 class User(models.Model):
     name = models.CharField(max_length=254)
@@ -31,6 +20,22 @@ class User(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
+
+    # def __str__(self):
+    #     return "%s %s" % (self.id, self.name, self.email)
+class Post(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    status = models.IntegerField(default=1)
+    created_user_id = models.IntegerField(blank=True, null=True)
+    updated_user_id = models.IntegerField(blank=True, null=True)
+    deleted_user_id = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 
 class CustomUser(AbstractUser):
     username = None
