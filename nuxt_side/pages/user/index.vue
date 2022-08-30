@@ -50,37 +50,39 @@
         <v-btn @click="searchUser()" name="submit-btn">Search</v-btn>
       </v-col>
       <v-col cols="1">
-        <v-btn name="submit-btn" @click="addUser">Add</v-btn>
+        <v-btn v-if="isMember === 'false'" name="submit-btn" @click="addUser">Add</v-btn>
       </v-col>
     </v-row>
     <v-data-table :headers="headers" :items="users" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer
       @page-count="pageCount = $event" class="elevation-1">\
       <template v-slot:[`item.name`]="{ item }">
-        <a href="#" @click="showUserDetail(item.id)">{{ item.name }}</a>
+        <a href="#" @click="showUserDetail(item.id)">{{  item.name  }}</a>
       </template>
       <template v-slot:[`item.email`]="{ item }">
-        {{ item.email }}
+        {{  item.email  }}
       </template>
       <template v-slot:[`item.updated_user_id`]="{ item }">
-        {{ item.updated_user_id }}
+        {{  item.updated_user_id  }}
       </template>
       <template v-slot:[`item.phone`]="{ item }">
-        {{ item.phone }}
+        {{  item.phone  }}
       </template>
       <template v-slot:[`item.dob`]="{ item }">
-        {{ item.dob }}
+        {{  item.dob  }}
       </template>
       <template v-slot:[`item.address`]="{ item }">
-        {{ item.address }}
+        {{  item.address  }}
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
-        {{ (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) }}
+        {{  (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) 
+        }}
       </template>
       <template v-slot:[`item.updated_at`]="{ item }">
-        {{ (new Date(Date.now() - (new Date(item.updated_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) }}
+        {{  (new Date(Date.now() - (new Date(item.updated_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) 
+        }}
       </template>
       <template v-slot:[`item.delete`]="{ item }">
-        <a @click="deleteId = item.id, deleteDialog = true">Delete</a>
+        <a v-if="isMember === 'false'" @click="deleteId = item.id, deleteDialog = true">Delete</a>
       </template>
     </v-data-table>
     <div class="text-center pt-2">
@@ -99,7 +101,7 @@
                 <span class="text-subtitle-1 text--primary">Name</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.userDetail.name}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.name }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -107,7 +109,7 @@
                 <span class="text-subtitle-1 text--primary">Email</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.userDetail.email}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.email }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -115,7 +117,7 @@
                 <span class="text-subtitle-1 text--primary">Birth Date</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.userDetail.dob}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.dob }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -123,7 +125,7 @@
                 <span class="text-subtitle-1 text--primary">Phone</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.userDetail.phone}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.phone }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -131,7 +133,7 @@
                 <span class="text-subtitle-1 text--primary">Address</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.userDetail.address}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.address }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -139,7 +141,7 @@
                 <span class="text-subtitle-1 text--primary">Profile</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{this.userDetail.profile}}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.profile }}</span>
               </v-col>
             </v-row>
           </v-container>
@@ -173,7 +175,9 @@
 window.axios = require('axios');
 
 export default {
-
+  created() {
+    this.isMember = localStorage.getItem("isMember");
+  },
   data() {
     return {
       page: 1,
@@ -183,6 +187,7 @@ export default {
       deleteDialog: false,
       deleteId: null,
       userDetail: {},
+      isMember: '',
       headers: [
         {
           text: 'Name',
@@ -223,10 +228,10 @@ export default {
     },
     async deleteUser() {
       try {
-        await this.$axios.$delete(`/users/${this.deleteId}/`); 
-        let remainUser = await this.$axios.$get("/users/"); 
+        await this.$axios.$delete(`/users/${this.deleteId}/`);
+        let remainUser = await this.$axios.$get("/users/");
         this.deleteDialog = false;
-        this.users = remainUser; 
+        this.users = remainUser;
       } catch (e) {
         console.log(e);
       }
@@ -267,6 +272,7 @@ export default {
 h1 {
   margin-bottom: 50px;
 }
+
 a {
   color: blue;
   text-decoration: underline;

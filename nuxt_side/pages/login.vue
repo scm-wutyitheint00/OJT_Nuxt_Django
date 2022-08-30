@@ -48,31 +48,36 @@ export default {
   methods: {
     async isAdmin(mailData) {
       await this.$axios
-        .$get(`/customuser/?search=${mailData}`)
+        .$get(`/users?email=${mailData}`)
         .then((response) => {
-          if(response && response[0].type === 'Admin') {
+          console.log('response', response)
+          localStorage.setItem('responseData', JSON.stringify(response[0]));
+
+          if(response && response[0].type === "1") {
             this.$store.commit('SET_MEMBER', false);
             localStorage.setItem("isMember", false);
           } else {
             this.$store.commit('SET_MEMBER', true);
             localStorage.setItem("isMember", true);
           }
-          // this.$router.push('/');
+          
+
         })
+        this.$router.push('/post');
     },
     async loginUser(userData) {
       try {
         await this.$auth.loginWith('local', {
           data: userData,
-        }).then(data => {
+        }).then( data => {
           console.log(data);
-          // 
+
           localStorage.setItem('loginEmail', userData.email);
 
           localStorage.setItem("lastOperationDate", new Date().toString());
-          this.$router.push('/post');
         });
         await this.isAdmin(userData.email);
+
       } catch (error) {
         this.loginInfo.valid = false;
       }

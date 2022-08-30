@@ -59,10 +59,11 @@
     <v-data-table :headers="headers" :items="posts" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer
       @page-count="pageCount = $event" class="elevation-1">\
       <template v-slot:[`item.title`]="{ item }">
-        <a href="#" @click="showPostDetail(item.id)">{{ item.title }}</a>
+        <a href="#" @click="showPostDetail(item.id)">{{  item.title  }}</a>
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
-        {{ (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) }}
+        {{  (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) 
+        }}
       </template>
       <template v-slot:[`item.edit`]="{ item }">
         <nuxt-link :to="`/post/${item.id}/edit`"><a href="#">Edit</a></nuxt-link>
@@ -86,7 +87,7 @@
                 <span class="text-subtitle-1 text--primary">Title</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.postDetail.title }}</span>
+                <span class="text-subtitle-1 text--primary">{{  this.postDetail.title  }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -94,7 +95,7 @@
                 <span class="text-subtitle-1 text--primary">Description</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.postDetail.description }}</span>
+                <span class="text-subtitle-1 text--primary">{{  this.postDetail.description  }}</span>
               </v-col>
             </v-row>
           </v-container>
@@ -121,7 +122,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
+
   </div>
 </template>
 <script>
@@ -160,24 +161,50 @@ export default {
       posts: [],
       search_term: '',
       postDetail: {},
-      datalogin : this.$store.getLoginData
+      datalogin: this.$store.getLoginData,
+      isMember: ''
     }
   },
+  created() {
+    this.isMember = localStorage.getItem("isMember");
+  },
   async asyncData({ $axios, params }) {
-    let posts = await $axios.$get(`/posts/`);
+    let posts = await $axios.$get(`/posts/`)
     posts.edit = true;
     posts.delete = true;
-    return { posts };
+    let isMember = localStorage.getItem("isMember");
+    const userData = JSON.parse(localStorage.getItem('responseData'));
+    if (isMember === 'true') {
+      posts = posts.filter(post => {
+        console.log(post.user, userData)
+        if (post.user === userData.id) {
+          return post
+        }
+      })
+    } 
+      return { posts };
+    
+    
   },
   methods: {
     addPost() {
       this.$router.push('/post/post-create');
     },
     async searchPost() {
-      let newPosts = await this.$axios.$get(`/posts?search=${this.search_term}`);
-      
-      this.posts = newPosts;
-      
+      const userData = JSON.parse(localStorage.getItem('responseData'));
+      await this.$axios.$get(`/posts?search=${this.search_term}`).then(data => {
+        if (this.isMember === 'true') {
+          this.posts = data.filter(post => {
+            console.log(post.user, userData)
+            if (post.user === userData.id) {
+              return post
+            }
+          })
+        }
+      })
+
+      // this.posts = newPosts;
+
     },
     async deletePost() {
       try {

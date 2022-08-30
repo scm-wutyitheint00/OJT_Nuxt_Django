@@ -53,10 +53,14 @@ export default {
       this.$router.push('/post/post-create');
     },
     async submitPost() {
-      let postData = { title: '', description: '', updated_user_id: 1, 
+      let postData = { title: '', description: '', 
                       created_at: new Date().toISOString()}
       postData.title = this.$store.state.posts.title;
       postData.description = this.$store.state.posts.description;
+      const userData = JSON.parse(localStorage.getItem('responseData'));
+      postData.user = userData.id;
+      postData.updated_user_id = userData.id;
+
       
       console.log(postData)
       const config = {
