@@ -6,7 +6,7 @@
             <v-btn v-if="($store.state.isMember || isMember === 'true') && $auth.loggedIn" text to="/user/profile">User</v-btn>
             <v-btn v-if="$auth.loggedIn" text to="/user">Users</v-btn>
             <v-spacer />
-            <div v-if="$auth.loggedIn && sectionTime">
+            <div v-if="$auth.loggedIn">
                 {{  $auth.user.email  }}
                 <v-btn text to="/" @click="logout()">Logout</v-btn>
             </div>
@@ -35,7 +35,7 @@
 <script>
 export default {
     created() {
-        const lastOperationDate = sessionStorage.getItem('lastOperationDate');
+        const lastOperationDate = localStorage.getItem('lastOperationDate');
         this.sectionTime = lastOperationDate;
         this.isMember = localStorage.getItem("isMember");
         console.log(this.isMember)
@@ -46,9 +46,9 @@ export default {
         console.log(operationtime)
         const inHour = Math.floor(operationtime / (1000 * 60 * 60));
         console.log(inHour)
-        if (inHour > 1) {
+        if (inHour > 19) {
             this.$auth.logout();
-            sessionStorage.clear();
+            localStorage.clear();
             this.showDialog = true
         }
     },
@@ -62,7 +62,7 @@ export default {
     methods: {
         logout() {
             this.$auth.logout();
-            sessionStorage.clear();
+            localStorage.clear();
             localStorage.removeItem('isMember');
             localStorage.removeItem('loginEmail');
         }

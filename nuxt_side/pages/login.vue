@@ -69,7 +69,7 @@ export default {
           // 
           localStorage.setItem('loginEmail', userData.email);
 
-          sessionStorage.setItem("lastOperationDate", new Date().toString());
+          localStorage.setItem("lastOperationDate", new Date().toString());
           this.$router.push('/post');
         });
         await this.isAdmin(userData.email);
