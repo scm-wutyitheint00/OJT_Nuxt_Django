@@ -11,7 +11,7 @@ class PostSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "name", "email", "profile", "type", "phone", "address", "dob",
+        fields = ("id", "name", "profile", "email", "type", "phone", "address", "dob",
               "updated_user_id", "deleted_user_id", "created_at", "updated_at", "deleted_at")
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     birth_date = serializers.CharField(required=False)
     bio = serializers.CharField(required=False)
-    gender = serializers.CharField(required=False)
+    type = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
     first_name = serializers.CharField(required=False)
     birth_date = serializers.CharField(required=False)
@@ -32,7 +32,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('first_name', 'last_name', 'email',
-                  'password', 'bio', 'gender', 'birth_date')
+                  'password', 'bio', 'type', 'birth_date')
 
 
 class CustomUserRetrieveSerializer(serializers.ModelSerializer):

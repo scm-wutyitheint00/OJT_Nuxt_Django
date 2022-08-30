@@ -93,7 +93,8 @@
           <v-subtitle>Profile</v-subtitle>
         </v-col>
         <v-col class="ma-0 pa-3" cols="8">
-          <v-text-field outlined v-model="user.profile" label="Profile" />
+          <input type="file" accept=".jpeg,.jpg,.png,image/jpeg,image/png" aria-label="upload image button"
+            @change="selectFile" />
         </v-col>
       </v-row>
       <v-btn name="submit-btn" @click="confirmPost">Confirm</v-btn>
@@ -130,6 +131,7 @@ export default {
         modal: false,
         menu2: false,
       },
+      imageData: '',
       items: ['Admin', 'User'],
       ...validations
     };
@@ -144,12 +146,17 @@ export default {
       this.user.name = '';
       this.user.email = '';
       this.user.password = '',
-      this.user.confirmPassword = '',
-      this.user.type = '',
-      this.user.phone = '',
-      this.user.dob = '',
-      this.user.address = '',
-      this.user.profile = ''
+        this.user.confirmPassword = '',
+        this.user.type = '',
+        this.user.phone = '',
+        this.user.dob = '',
+        this.user.address = '',
+        this.user.profile = ''
+    },
+    async selectFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      this.user.profile = file;
     }
   }
 };

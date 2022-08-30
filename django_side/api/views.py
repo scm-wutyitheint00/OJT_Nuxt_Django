@@ -34,6 +34,8 @@ class CustomUserModelViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
     permission_classes = (permissions.AllowAny,)
     queryset = CustomUser.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['email']
 
     def perform_create(self, serializer):
         instance = serializer.save()
@@ -55,7 +57,7 @@ class UserFilter(django_filters.FilterSet):
 
     class Meta:
         model = User
-        fields = ["id", "name", "email", "profile", "type", "phone", "address", "dob",
+        fields = ["id", "name", "email", "type", "phone", "address", "dob",
               "updated_user_id", "deleted_user_id", "created_at", "updated_at", "deleted_at"]
 
 

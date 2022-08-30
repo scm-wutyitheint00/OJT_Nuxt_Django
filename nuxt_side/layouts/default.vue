@@ -3,9 +3,10 @@
         <v-app-bar app color="green">
             <v-toolbar-title>Bulletin Board</v-toolbar-title>
             <v-btn v-if="$auth.loggedIn" text to="/post">Posts</v-btn>
+            <v-btn v-if="($store.state.isMember || isMember === 'true') && $auth.loggedIn" text to="/user/profile">User</v-btn>
             <v-btn v-if="$auth.loggedIn" text to="/user">Users</v-btn>
             <v-spacer />
-            <div v-if="$auth.loggedIn">
+            <div v-if="$auth.loggedIn && sectionTime">
                 {{  $auth.user.email  }}
                 <v-btn text to="/" @click="logout()">Logout</v-btn>
             </div>
@@ -34,7 +35,10 @@
 <script>
 export default {
     created() {
-        const lastOperationDate = sessionStorage.getItem('lastOperationDate')
+        const lastOperationDate = sessionStorage.getItem('lastOperationDate');
+        this.sectionTime = lastOperationDate;
+        this.isMember = localStorage.getItem("isMember");
+        console.log(this.isMember)
         if (!lastOperationDate) {
             return
         }
@@ -50,13 +54,17 @@ export default {
     },
     data() {
         return {
-            showDialog: false
+            showDialog: false,
+            sectionTime: null,
+            isMember: ''
         }
     },
     methods: {
         logout() {
             this.$auth.logout();
             sessionStorage.clear();
+            localStorage.removeItem('isMember');
+            localStorage.removeItem('loginEmail');
         }
     }
 }

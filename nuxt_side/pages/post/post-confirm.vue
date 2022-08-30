@@ -54,7 +54,7 @@ export default {
     },
     async submitPost() {
       let postData = { title: '', description: '', updated_user_id: 1, 
-                      created_at: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),}
+                      created_at: new Date().toISOString()}
       postData.title = this.$store.state.posts.title;
       postData.description = this.$store.state.posts.description;
       

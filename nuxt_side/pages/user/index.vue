@@ -74,10 +74,10 @@
         {{ item.address }}
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
-        {{ item.created_at }}
+        {{ (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) }}
       </template>
       <template v-slot:[`item.updated_at`]="{ item }">
-        {{ item.updated_at }}
+        {{ (new Date(Date.now() - (new Date(item.updated_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) }}
       </template>
       <template v-slot:[`item.delete`]="{ item }">
         <a @click="deleteId = item.id, deleteDialog = true">Delete</a>

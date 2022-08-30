@@ -2,6 +2,7 @@ export const state = () => ({
   posts: {},
   user: {},
   loginData: {},
+  isMember: ''
 })
 
 export const mutations = ({
@@ -23,6 +24,9 @@ export const mutations = ({
   },
   ADD_LOGIN_DATA(state, datas) {
     state.loginData = datas;
+  }, 
+  SET_MEMBER(state, data) {
+    state.isMember = data;
   }
 })
 

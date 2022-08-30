@@ -61,6 +61,9 @@
       <template v-slot:[`item.title`]="{ item }">
         <a href="#" @click="showPostDetail(item.id)">{{ item.title }}</a>
       </template>
+      <template v-slot:[`item.created_at`]="{ item }">
+        {{ (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) }}
+      </template>
       <template v-slot:[`item.edit`]="{ item }">
         <nuxt-link :to="`/post/${item.id}/edit`"><a href="#">Edit</a></nuxt-link>
       </template>
@@ -172,6 +175,7 @@ export default {
     },
     async searchPost() {
       let newPosts = await this.$axios.$get(`/posts?search=${this.search_term}`);
+      
       this.posts = newPosts;
       
     },
