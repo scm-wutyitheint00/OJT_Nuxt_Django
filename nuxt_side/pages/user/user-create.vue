@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <v-form>
+    <v-form v-model="isFormValid">
       <v-row>
         <h1 class="title">
-          Create User
+          User Create
         </h1>
       </v-row>
       <v-row>
@@ -40,13 +40,12 @@
           <v-select :items="items" outlined v-model="user.type" :rules="[required('type')]"></v-select>
         </v-col>
       </v-row>
-
       <v-row>
         <v-col class="ma-0 pa-3" cols="2">
           <v-subtitle>Phone</v-subtitle>
         </v-col>
         <v-col class="ma-0 pa-3" cols="8">
-          <v-text-field outlined v-model="user.phone" label="Phone" />
+          <v-text-field type="number" outlined v-model="user.phone" label="Phone" />
         </v-col>
       </v-row>
       <v-row>
@@ -83,17 +82,22 @@
         <v-col class="ma-0 pa-3" cols="2">
           <v-subtitle>Profile</v-subtitle>
         </v-col>
-        <v-col class="ma-0 pa-3 text-left" cols="8">
-          <input type="file" accept=".jpeg,.jpg,.png,image/jpeg,image/png" aria-label="upload image button"
-            @change="selectFile" />
-
+        <v-col class="ma-0 pa-3 text-left" cols="6">
+          <input ref="fileupload" type="file" accept=".jpeg,.jpg,.png,image/jpeg,image/png"
+            aria-label="upload image button" @change="selectFile" />
           <div id="preview">
             <img v-if="url" :src="url" />
           </div>
         </v-col>
+        <v-col class="ma-0 pa-3 text-left" cols="2">
+          <v-icon style="cursor:pointer" @click="clearImage" right>
+            mdi-close
+          </v-icon>
+        </v-col>
       </v-row>
-      <v-btn name="submit-btn" @click="confirmPost">Confirm</v-btn>
-      <v-btn name="submit-btn" @click="clearData">Clear</v-btn>
+      <v-btn style="margin : 40px 20px" name="submit-btn" :disabled="!isFormValid" @click="confirmPost">Confirm</v-btn>
+      <v-btn style="margin : 40px 20px" name="submit-btn" @click="clearData">Clear</v-btn>
+
     </v-form>
   </div>
 </template>
@@ -121,20 +125,19 @@ export default {
         dob: '',
         address: '',
         profile: '',
-        // type: [admin, user],
         menu: false,
         modal: false,
         menu2: false,
       },
       imageData: '',
       items: ['Admin', 'User'],
+      isFormValid: false,
       url: '',
       ...validations
     };
   },
   methods: {
     confirmPost() {
-      console.log('user', this.user)
       this.$router.push({ path: '/user/user-confirm' });
       this.$store.commit('ADD_USER', this.user)
     },
@@ -147,13 +150,18 @@ export default {
         this.user.phone = '',
         this.user.dob = '',
         this.user.address = '',
-        this.user.profile = ''
+        this.user.profile = '',
+        this.url = ''
     },
     async selectFile(e) {
       const file = e.target.files[0];
       if (!file) return;
       this.user.profile = file;
       this.url = URL.createObjectURL(file);
+    },
+    clearImage() {
+      this.$refs.fileupload.value = null;
+      this.url = '';
     }
   }
 };

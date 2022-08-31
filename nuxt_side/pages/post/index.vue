@@ -59,10 +59,10 @@
     <v-data-table :headers="headers" :items="posts" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer
       @page-count="pageCount = $event" class="elevation-1">\
       <template v-slot:[`item.title`]="{ item }">
-        <a href="#" @click="showPostDetail(item.id)">{{  item.title  }}</a>
+        <a href="#" @click="showPostDetail(item.id)">{{ item.title }}</a>
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
-        {{  (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) 
+        {{ (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
         }}
       </template>
       <template v-slot:[`item.edit`]="{ item }">
@@ -87,7 +87,7 @@
                 <span class="text-subtitle-1 text--primary">Title</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{  this.postDetail.title  }}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.postDetail.title }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -95,7 +95,7 @@
                 <span class="text-subtitle-1 text--primary">Description</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{  this.postDetail.description  }}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.postDetail.description }}</span>
               </v-col>
             </v-row>
           </v-container>
@@ -122,9 +122,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
+
 <script>
 window.axios = require('axios');
 import exportFromJSON from "export-from-json";
@@ -182,8 +182,6 @@ export default {
       })
     }
     return { posts };
-
-
   },
   methods: {
     addPost() {
@@ -194,30 +192,35 @@ export default {
       await this.$axios.$get(`/posts?search=${this.search_term}`).then(data => {
         if (this.$store.state.isMember === 'true' || this.isMember === 'true') {
           this.posts = data.filter(post => {
-            console.log(post.user, userData)
             if (post.user === userData.id) {
               return post
             }
           })
         } else {
-          this.posts =  data
+          this.posts = data
         }
       })
-
-      // this.posts = newPosts;
-
     },
     async deletePost() {
       try {
         const userData = JSON.parse(localStorage.getItem('responseData'));
-        if (this.deleteId === userData) {
-          alert('You can not delete login User');
-          return
-        }
         await this.$axios.$delete(`/posts/${this.deleteId}/`);
-        let newPosts = await this.$axios.$get(`/posts/`);
+        await this.$axios.$get(`/posts`).then(data => {
+          if (data.length > 0) {
+            if (this.$store.state.isMember === 'true' || this.isMember === 'true') {
+              this.posts = data.filter(post => {
+                if (post.user === userData.id) {
+                  return post
+                }
+              })
+            } else {
+              this.posts = data
+            }
+          } else {
+            this.posts = []
+          }
+        })
         this.deleteDialog = false;
-        this.posts = newPosts;
       } catch (e) {
         console.log(e);
       }
@@ -278,9 +281,7 @@ export default {
         var reader = new FileReader();
         const xlsxMatch = file?.type.match(/^application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet$/gi);
         const csvTsvMatch = file?.type.match(/^text\/(csv|tab-separated-values)/gi);
-
         if (!file || (!xlsxMatch && !csvTsvMatch && !file.name.match(/\.(xlsx|csv)$/gi))) {
-          console.error('file name type');
           alert("Canno't read file !");
         } else {
           reader.readAsText(e.target.files[0]);
@@ -295,7 +296,7 @@ export default {
     },
     async downloadCSVData() {
       let posts = await this.$axios.$get(`/posts/`);
-      const data = posts;
+      const data = this.posts;
       const downloadData = new Date().toLocaleDateString(['ban', 'id']);
       const fileName = `post-list_${downloadData}.csv`;
       const exportType = exportFromJSON.types.csv;
@@ -306,8 +307,23 @@ export default {
       this.detailDialog = true;
     },
     async clickOK() {
+      const userData = JSON.parse(localStorage.getItem('responseData'));
       this.confirmDialog = false;
-      this.posts = await this.$axios.$get(`/posts/`);
+      await this.$axios.$get(`/posts`).then(data => {
+        if (data.length > 0) {
+          if (this.$store.state.isMember === 'true' || this.isMember === 'true') {
+            this.posts = data.filter(post => {
+              if (post.user === userData.id) {
+                return post
+              }
+            })
+          } else {
+            this.posts = data
+          }
+        } else {
+          this.posts = []
+        }
+      })
     }
   }
 }

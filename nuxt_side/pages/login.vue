@@ -4,17 +4,16 @@
     <v-container>
       <v-layout align-center justify-center>
         <v-flex sm7>
-          <v-form>
+          <v-form v-model="isFormValid">
             <v-text-field v-model="loginInfo.email" label="Enter your e-mail address" counter
               :rules="[required('email'), emailFormat()]"></v-text-field>
             <v-text-field v-model="loginInfo.password" label="Enter your password"
               :rules="[required('password'), minLenght('password', 8)]" :append-icon="
-                loginInfo.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="loginInfo.showPassword ? 'text' : 'password'" @click:append="loginInfo.showPassword = !loginInfo.showPassword"></v-text-field>
-            <v-layout justify-end>
-              <a href="">Forgot Password</a>
-            </v-layout>
+              loginInfo.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="loginInfo.showPassword ? 'text' : 'password'"
+              @click:append="loginInfo.showPassword = !loginInfo.showPassword"></v-text-field>
             <p class="red--text" v-if="!loginInfo.valid">Invalid Email and Password!</p>
-            <v-btn name="submit-btn" @click="loginUser(loginInfo)">Login</v-btn>
+            <v-btn style="margin : 30px" :disabled="!isFormValid" name="submit-btn" @click="loginUser(loginInfo)">Login
+            </v-btn>
           </v-form>
         </v-flex>
       </v-layout>
@@ -25,8 +24,6 @@
 <script>
 import validations from '@/utils/validations'
 export default {
-  // name: 'IndexPage',
-
   data() {
     return {
       loginInfo: {
@@ -39,6 +36,7 @@ export default {
         logintime: '',
         token: ''
       },
+      isFormValid: false,
       ...validations
     }
   },
@@ -67,7 +65,6 @@ export default {
           localStorage.setItem("lastOperationDate", new Date().toString());
         });
         await this.isAdmin(userData.email);
-
       } catch (error) {
         this.loginInfo.valid = false;
       }

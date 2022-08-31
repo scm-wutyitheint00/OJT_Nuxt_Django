@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <h1 class="title">
-      Create Post
+      Post Edit
     </h1>
-    <v-form>
+    <v-form v-model="isFormValid">
       <v-row>
         <v-col cols="2">
           <v-subheader>Title</v-subheader>
@@ -20,9 +20,10 @@
           <v-textarea v-model="post.description" label="Description" :rules="[required('description')]" type="text" />
         </v-col>
       </v-row>
-
-      <v-btn name="submit-btn" @click="submitPost(post)">Confirm</v-btn>
-      <v-btn name="submit-btn" @click="clearData">Clear</v-btn>
+      <v-space></v-space>
+      <v-btn style="margin : 40px 20px" name="submit-btn" :disabled="!isFormValid" @click="submitPost(post)">Confirm
+      </v-btn>
+      <v-btn style="margin : 40px 20px" name="submit-btn" @click="clearData">Clear</v-btn>
     </v-form>
   </div>
 </template>
@@ -37,7 +38,7 @@ export default {
   },
   async asyncData({ $axios, params }) {
     try {
-      let post = await $axios.$get(`/posts/${params.id}`);      
+      let post = await $axios.$get(`/posts/${params.id}`);
       return { post };
     } catch (e) {
       return { post: [] };
@@ -51,6 +52,7 @@ export default {
         type: "",
         created_user_id: 1
       },
+      isFormValid: false,
       ...validations
     };
   },
@@ -62,7 +64,6 @@ export default {
           delete editedpost[key];
         }
       });
-
       const config = {
         headers: { "content-type": "multipart/form-data" }
       };

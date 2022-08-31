@@ -56,32 +56,32 @@
     <v-data-table :headers="headers" :items="users" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer
       @page-count="pageCount = $event" class="elevation-1">\
       <template v-slot:[`item.name`]="{ item }">
-        <a href="#" @click="showUserDetail(item.id)">{{  item.name  }}</a>
+        <a href="#" @click="showUserDetail(item.id)">{{ item.name }}</a>
       </template>
       <template v-slot:[`item.email`]="{ item }">
-        {{  item.email  }}
+        {{ item.email }}
       </template>
       <template v-slot:[`item.updated_user_id`]="{ item }">
-        {{  item.updated_user_id  }}
+        {{ item.updated_user_id }}
       </template>
       <template v-slot:[`item.phone`]="{ item }">
-        {{  item.phone  }}
+        {{ item.phone }}
       </template>
       <template v-slot:[`item.dob`]="{ item }">
-        {{  item.dob  }}
+        {{ item.dob }}
       </template>
       <template v-slot:[`item.address`]="{ item }">
-        {{  item.address  }}
+        {{ item.address }}
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
-        {{  changeDateFormat(item.created_at) 
+        {{ changeDateFormat(item.created_at)
         }}
       </template>
       <template v-slot:[`item.updated_at`]="{ item }">
-        {{  changeDateFormat(item.updated_at)  }}
+        {{ changeDateFormat(item.updated_at) }}
       </template>
       <template v-slot:[`item.delete`]="{ item }">
-        <a v-if="isMember === 'false'" @click="deleteId = item.id, deleteDialog = true">Delete</a>
+        <a v-if="isMember === 'false'" @click="deleteConfirm(item.id)">Delete</a>
       </template>
     </v-data-table>
     <div class="text-center pt-2">
@@ -100,7 +100,7 @@
                 <span class="text-subtitle-1 text--primary">Name</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{  this.userDetail.name  }}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.name }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -108,7 +108,7 @@
                 <span class="text-subtitle-1 text--primary">Email</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{  this.userDetail.email  }}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.email }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -116,7 +116,7 @@
                 <span class="text-subtitle-1 text--primary">Birth Date</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{  this.userDetail.dob  }}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.dob }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -124,7 +124,7 @@
                 <span class="text-subtitle-1 text--primary">Phone</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{  this.userDetail.phone  }}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.phone }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -132,7 +132,7 @@
                 <span class="text-subtitle-1 text--primary">Address</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{  this.userDetail.address  }}</span>
+                <span class="text-subtitle-1 text--primary">{{ this.userDetail.address }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -217,7 +217,6 @@ export default {
   },
 
   async asyncData({ $axios, params }) {
-    // try {
     let users = await $axios.$get(`/users/`);
     users.edit = true;
     users.delete = true;
@@ -226,6 +225,15 @@ export default {
   methods: {
     addUser() {
       this.$router.push('/user/user-create');
+    },
+    async deleteConfirm(parseId) {
+      this.deleteId = parseId;
+      const userData = JSON.parse(localStorage.getItem('responseData'));
+      if (userData.id === parseId) {
+        alert('Login user cannot delete!');
+      } else {
+        this.deleteDialog = true;
+      }
     },
     async deleteUser() {
       try {
@@ -240,7 +248,6 @@ export default {
     async searchUser() {
       let searchUser = await this.$axios.
         $get(`/users?name=${this.searchData.name}&email=${this.searchData.email}`);
-      console.log('search user', searchUser)
       this.users = searchUser.filter(user => {
         if (this.searchData.created_from && !this.searchData.created_to) {
           if (user.created_at > this.searchData.created_from) {
@@ -251,7 +258,6 @@ export default {
             return user
           }
         } else if (this.searchData.created_from && this.searchData.created_to) {
-          console.log('both')
           if (this.searchData.created_from < user.created_at && user.created_at < this.searchData.created_to) {
             return user
           }
@@ -263,7 +269,6 @@ export default {
     },
     async showUserDetail(userId) {
       this.userDetail = await this.$axios.$get(`/users/${userId}`);
-      console.log('profile', this.userDetail.profile)
       this.url = this.userDetail.profile;
       this.detailDialog = true;
     },

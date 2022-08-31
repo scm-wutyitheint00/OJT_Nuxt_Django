@@ -22,7 +22,7 @@
  3. run `python manage.py makemigrations api` and `python manage.py migrate api` to create table
  4. run `python manage.py migrate` to create the database
  5. create a superuser with `python manage.py createsuperuser`
- 6. start server with`python manage.py runserver`
+ 6. start server with `python manage.py runserver`
  7. login using your admin credentials `localhost:8000/admin` to check admin dashboard (optional)
   
 ## Configuring the Frontend 

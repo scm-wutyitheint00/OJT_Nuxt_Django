@@ -1,21 +1,22 @@
 <template>
   <div class="register-page">
-    <h1>Register Form</h1>
+    <h1>Registration Form</h1>
     <v-container>
       <v-layout align-center justify-center>
         <v-flex sm7>
-          <v-form ref="form">
+          <v-form v-model="isFormValid" ref="form">
             <v-text-field v-model="name" label="Enter your name" counter :rules="[required('name')]"></v-text-field>
             <v-text-field v-model="userData.email" label="Enter your e-mail address" counter
               :rules="[required('email'), emailFormat()]"></v-text-field>
             <v-text-field v-model="userData.password" label="Enter your password"
               :rules="[required('password'), minLenght('password', 8)]" :append-icon="
                 userData.showPassword ? 'mdi-eye' : 'mdi-eye-off'
-              " :type="userData.showPassword ? 'text' : 'password'" @click:append="userData.showPassword = !userData.showPassword"></v-text-field>
+              " :type="userData.showPassword ? 'text' : 'password'"
+              @click:append="userData.showPassword = !userData.showPassword"></v-text-field>
             <v-select :items="items" label="User Type" v-model="userData.type" :rules="[required('user type')]">
             </v-select>
-            <p class="red--text" v-if="!userData.valid">{{  userData.error  }}</p>
-            <v-btn @click="signUp(userData)">
+            <p class="red--text" v-if="!userData.valid">{{ userData.error }}</p>
+            <v-btn style="margin : 30px" :disabled="!isFormValid" @click="signUp(userData)">
               Register
             </v-btn>
           </v-form>
@@ -41,12 +42,13 @@ export default {
     },
     name: '',
     items: ['Admin', 'User'],
+    isFormValid: false,
     ...validations
   }),
   methods: {
     async createUser(userData) {
       userData.name = this.name;
-      userData.type = userData.type === 'Admin' ? 1: 2;
+      userData.type = userData.type === 'Admin' ? 1 : 2;
       userData.created_at = new Date().toISOString();
       userData.updated_at = new Date().toISOString();
       const config = {
@@ -62,7 +64,7 @@ export default {
       registrationInfo =
         await this.$axios
           .$post('/customuser/', registrationInfo)
-          .then(async(response) => {
+          .then(async (response) => {
             await this.$auth.loginWith('local', {
               data: registrationInfo,
             }).then(async () => {
@@ -73,7 +75,6 @@ export default {
             )
           })
           .catch((error) => {
-            console.log('errors:', error.response.data.email)
             if (error.response.data.email) {
               this.userData.valid = false;
               this.userData.error = error.response.data.email[0];

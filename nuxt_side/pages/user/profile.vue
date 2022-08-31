@@ -11,7 +11,7 @@
               <v-subtitle>Name</v-subtitle>
             </v-col>
             <v-col cols="8">
-              <p class="text-subtitle"> {{  confirmData.name  }}
+              <p class="text-subtitle"> {{ confirmData.name }}
               </p>
             </v-col>
           </v-row>
@@ -20,7 +20,7 @@
               <v-subtitle>Email</v-subtitle>
             </v-col>
             <v-col cols="8">
-              <p class="text-subtitle"> {{  confirmData.email  }}
+              <p class="text-subtitle"> {{ confirmData.email }}
               </p>
             </v-col>
           </v-row>
@@ -30,7 +30,7 @@
             </v-col>
             <v-col cols="8">
               <p class="text-subtitle">
-                {{  confirmData.type  }}
+                {{ confirmData.type }}
               </p>
             </v-col>
           </v-row>
@@ -39,7 +39,7 @@
               <v-subtitle>Phone</v-subtitle>
             </v-col>
             <v-col cols="8">
-              <p class="text-subtitle">{{  confirmData.phone  }}
+              <p class="text-subtitle">{{ confirmData.phone }}
               </p>
             </v-col>
           </v-row>
@@ -48,7 +48,7 @@
               <v-subtitle>Date of Birth</v-subtitle>
             </v-col>
             <v-col cols="8">
-              <p class="text-subtitle">{{  confirmData.dob  }}
+              <p class="text-subtitle">{{ confirmData.dob }}
               </p>
             </v-col>
           </v-row>
@@ -58,13 +58,15 @@
             </v-col>
             <v-col cols="8">
               <p class="text-subtitle">
-                {{  confirmData.address  }}
+                {{ confirmData.address }}
               </p>
             </v-col>
           </v-row>
 
-          <nuxt-link :to="`/user/${confirmData.id}/edit`"><a href="#"><v-btn name="submit-btn">Edit</v-btn></a></nuxt-link>
-          
+          <nuxt-link :to="`/user/${confirmData.id}/edit`"><a href="#">
+              <v-btn name="submit-btn">Edit</v-btn>
+            </a></nuxt-link>
+
         </v-form>
       </v-col>
       <v-col cols="3">
@@ -74,11 +76,9 @@
   </div>
 </template>
   
-  <script>
+<script>
 import validations from '@/utils/validations'
 export default {
-
-  // name: 'IndexPage',
   data() {
     return {
       confirmData: {
@@ -105,12 +105,8 @@ export default {
           this.url = this.confirmData.profile;
         }
       })
-    console.log(this.confirmData)
   },
   methods: {
-    loginUser() {
-      console.log(this.confirmData)
-    },
     clickCancel() {
       this.$router.push('/user/user-create');
     },
@@ -119,7 +115,6 @@ export default {
         const loginMail = localStorage.getItem('loginEmail');
         let confirmData = await this.$axios.
           $get(`/users?email=${loginMail}`);
-        console.log(confirmData)
         return { confirmData };
       } catch (e) {
         return { confirmData: [] };
