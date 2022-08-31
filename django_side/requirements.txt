@@ -1,0 +1,7 @@
+Django
+django-rest-framework
+django-cors-headers
+dj-rest-auth 
+django-filter
+djoser
+Pillow
