@@ -216,11 +216,15 @@ export default {
     }
   },
 
-  async asyncData({ $axios, params }) {
-    let users = await $axios.$get(`/users/`);
-    users.edit = true;
-    users.delete = true;
-    return { users };
+  async asyncData({ $axios , redirect}) {
+    try {
+      let users = await $axios.$get(`/users/`);
+      users.edit = true;
+      users.delete = true;
+      return { users };
+    } catch(e) {
+      return redirect('/')
+    }
   },
   methods: {
     addUser() {

@@ -168,20 +168,24 @@ export default {
   created() {
     this.isMember = localStorage.getItem("isMember");
   },
-  async asyncData({ $axios, params }) {
-    let posts = await $axios.$get(`/posts/`)
-    posts.edit = true;
-    posts.delete = true;
-    let isMember = localStorage.getItem("isMember");
-    const userData = JSON.parse(localStorage.getItem('responseData'));
-    if (isMember === 'true') {
-      posts = posts.filter(post => {
-        if (post.user === userData.id) {
-          return post
-        }
-      })
+  async asyncData({ $axios, redirect }) {
+    try {
+      let posts = await $axios.$get(`/posts/`)
+      posts.edit = true;
+      posts.delete = true;
+      let isMember = localStorage.getItem("isMember");
+      const userData = JSON.parse(localStorage.getItem('responseData'));
+      if (isMember === 'true') {
+        posts = posts.filter(post => {
+          if (post.user === userData.id) {
+            return post
+          }
+        })
+      }
+      return { posts };
+    } catch (e) {
+      return redirect('/')
     }
-    return { posts };
   },
   methods: {
     addPost() {
