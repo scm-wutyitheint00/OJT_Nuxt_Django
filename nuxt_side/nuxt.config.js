@@ -1,7 +1,6 @@
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
-
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'nuxt_side',
@@ -19,6 +18,8 @@ export default {
     ]
   },
 
+  middleware: ["auth"],
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],
@@ -32,11 +33,48 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
+    '@nuxtjs/vuetify',
+    '@nuxtjs/auth',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/axios',
   ],
+
+  axios: {
+    baseURL: "http://localhost:8000/api"
+  },
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: 'http://localhost:8000/token/login/',
+            method: 'post',
+            propertyName: 'auth_token',
+          },
+          logout: { url: 'http://localhost:8000/token/logout/', method: 'post' },
+          user: {
+            url: '/data/',
+            method: 'get',
+            propertyName: false,
+          },
+        },
+        tokenType: 'Token',
+        tokenName: 'Authorization',
+        token: {
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 10
+        },
+      },
+      redirect: {
+        login: '/login',
+        home: '/',
+      },
+    },
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
