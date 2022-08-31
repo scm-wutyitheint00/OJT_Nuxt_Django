@@ -6,82 +6,72 @@
     <v-form>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Name</v-subheader>
+          <v-subtitle>Name</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <p class="text-subtitle-2">
-            {{ $store.state.user.name }}
+          <p class="text-subtitle">
+            {{  $store.state.user.name  }}
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Email</v-subheader>
+          <v-subtitle>Email</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <p class="text-subtitle-2">
-            {{ $store.state.user.email }}
+          <p class="text-subtitle">
+            {{  $store.state.user.email  }}
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Password</v-subheader>
+          <v-subtitle>Type</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <p class="text-subtitle-2">
-            {{ $store.state.user.password }}
+          <p class="text-subtitle">
+            {{  $store.state.user.type  }}
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Type</v-subheader>
+          <v-subtitle>Phone</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <p class="text-subtitle-2">
-            {{ $store.state.user.type }}
+          <p class="text-subtitle">
+            {{  $store.state.user.phone  }}
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Phone</v-subheader>
+          <v-subtitle>Date of Birth</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <p class="text-subtitle-2">
-            {{ $store.state.user.phone }}
+          <p class="text-subtitle">
+            {{  $store.state.user.dob  }}
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Date of Birth</v-subheader>
+          <v-subtitle>Address</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <p class="text-subtitle-2" >
-            {{ $store.state.user.dob }}
+          <p class="text-subtitle">
+            {{  $store.state.user.address  }}
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <v-subheader>Address</v-subheader>
+          <v-subtitle>Profile</v-subtitle>
         </v-col>
         <v-col cols="8">
-          <p class="text-subtitle-2">
-            {{ $store.state.user.address }}
-          </p>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="2">
-          <v-subheader>Profile</v-subheader>
-        </v-col>
-        <v-col cols="8">
-          <p class="text-subtitle-2">
-            {{ $store.state.user.profile }}
-          </p>
+          <div id="preview">
+            <img v-if="url" :src="url" />
+          </div>
         </v-col>
       </v-row>
       <v-btn name="submit-btn" @click="submitUser">Create</v-btn>
@@ -93,13 +83,16 @@
 <script>
 import validations from '@/utils/validations'
 export default {
-
-  // name: 'IndexPage',
+  created() {
+    if(this.$store.state.user.profile) {
+      this.url =  URL.createObjectURL(this.$store.state.user.profile);
+    }
+  },
   data() {
     return {
       confirmData: {
-        name : this.$store.state.user.name,
-        email : this.$store.state.user.email,
+        name: this.$store.state.user.name,
+        email: this.$store.state.user.email,
         password: this.$store.state.user.password,
         confirmPassword: this.$store.state.user.confirmPassword,
         type: 1,
@@ -108,32 +101,20 @@ export default {
         address: this.$store.state.user.address,
         profile: this.$store.state.user.profile
       },
+      url: '',
       valid: false,
       ...validations
     }
   },
   async asyncData({ $axios, params }) {
-           console.log(params.mode)
-        },
+    console.log(params.mode)
+  },
   methods: {
     loginUser() {
       console.log(this.$store.state.user)
     },
     clickCancel() {
       this.$router.push('/user/user-create');
-    },
-    createImage(e) {
-      // const formData = new FormData();
-      // formData.append("file",  this.confirmData.profile);
-      // this.$axios
-      //   .post("/upload", formData)
-      //   .then((data) => {
-      //     console.log(data)
-      //     console.log("SUCCESS");
-      //   })
-      //   .catch(() => {
-      //     console.log("FAILED");
-      //   });
     },
     async submitUser() {
       let userData = this.confirmData;
@@ -169,5 +150,9 @@ export default {
 <style>
 h1 {
   margin-bottom: 100px;
+}
+#preview img {
+  max-width: 100%;
+  max-height: 500px;
 }
 </style>

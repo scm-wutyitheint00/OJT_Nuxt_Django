@@ -176,15 +176,14 @@ export default {
     const userData = JSON.parse(localStorage.getItem('responseData'));
     if (isMember === 'true') {
       posts = posts.filter(post => {
-        console.log(post.user, userData)
         if (post.user === userData.id) {
           return post
         }
       })
-    } 
-      return { posts };
-    
-    
+    }
+    return { posts };
+
+
   },
   methods: {
     addPost() {
@@ -193,13 +192,15 @@ export default {
     async searchPost() {
       const userData = JSON.parse(localStorage.getItem('responseData'));
       await this.$axios.$get(`/posts?search=${this.search_term}`).then(data => {
-        if (this.isMember === 'true') {
+        if (this.$store.state.isMember === 'true' || this.isMember === 'true') {
           this.posts = data.filter(post => {
             console.log(post.user, userData)
             if (post.user === userData.id) {
               return post
             }
           })
+        } else {
+          this.posts =  data
         }
       })
 
@@ -208,6 +209,11 @@ export default {
     },
     async deletePost() {
       try {
+        const userData = JSON.parse(localStorage.getItem('responseData'));
+        if (this.deleteId === userData) {
+          alert('You can not delete login User');
+          return
+        }
         await this.$axios.$delete(`/posts/${this.deleteId}/`);
         let newPosts = await this.$axios.$get(`/posts/`);
         this.deleteDialog = false;
@@ -220,11 +226,14 @@ export default {
       this.dialog = false;
       this.csvDatas.forEach(data => {
         let postData = {
-          title: '', description: '', updated_user_id: 1,
-          created_at: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+          title: '', description: '',
+          created_at: new Date().toISOString(),
         }
         postData.title = data.title;
         postData.description = data.description;
+        const userData = JSON.parse(localStorage.getItem('responseData'));
+        postData.user = userData.id;
+        postData.updated_user_id = userData.id;
         const config = {
           headers: { "content-type": "multipart/form-data" }
         };

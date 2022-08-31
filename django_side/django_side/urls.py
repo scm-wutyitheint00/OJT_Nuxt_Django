@@ -22,11 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('', include('djoser.urls.authtoken')),
-    # path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls'))
-
-    # path('dj-rest-auth/', include('dj_rest_auth.urls')),
-    # path(r'^auth/', include('timed_auth_token.urls')),
 ]
 
 if settings.DEBUG:

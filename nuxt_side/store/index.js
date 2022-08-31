@@ -2,7 +2,7 @@ export const state = () => ({
   posts: {},
   user: {},
   loginData: {},
-  isMember: ''
+  isMember: false
 })
 
 export const mutations = ({
@@ -27,6 +27,7 @@ export const mutations = ({
   }, 
   SET_MEMBER(state, data) {
     state.isMember = data;
+      this.$router.push('/post');
   }
 })
 

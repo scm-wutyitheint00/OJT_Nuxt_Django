@@ -2,8 +2,9 @@
     <v-app>
         <v-app-bar app color="green">
             <v-toolbar-title>Bulletin Board</v-toolbar-title>
-            <v-btn v-if="isMember !== null && $auth.loggedIn" text to="/post">Posts</v-btn>
-            <v-btn v-if="isMember === 'true' && $auth.loggedIn" text to="/user/profile">User</v-btn>
+            <v-btn v-if="$auth.loggedIn" text to="/post">Posts</v-btn>
+            <v-btn v-if="($store.state.isMember === true || isMember === 'true') && $auth.loggedIn" text
+                to="/user/profile">User</v-btn>
             <v-btn v-if="$auth.loggedIn" text to="/user">Users</v-btn>
             <v-spacer />
             <div v-if="$auth.loggedIn">
@@ -42,9 +43,7 @@ export default {
             return
         }
         const operationtime = Date.now() - new Date(lastOperationDate).getTime();
-        console.log(operationtime)
         const inHour = Math.floor(operationtime / (1000 * 60 * 60));
-        console.log(inHour)
         if (inHour > 1) {
             this.$auth.logout();
             localStorage.clear();
@@ -61,8 +60,7 @@ export default {
     async asyncData({ $axios, params }) {
         // try {
         let isMember = localStorage.getItem("isMember");
-        
-        return {isMember};
+        return { isMember };
     },
     methods: {
         logout() {
@@ -70,6 +68,7 @@ export default {
             localStorage.clear();
             localStorage.removeItem('isMember');
             localStorage.removeItem('loginEmail');
+            this.$store.commit('SET_MEMBER', '');
         }
     }
 }
@@ -85,7 +84,7 @@ body {
         Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
         Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     margin: 0;
-    padding: 0;
+
 }
 
 a {

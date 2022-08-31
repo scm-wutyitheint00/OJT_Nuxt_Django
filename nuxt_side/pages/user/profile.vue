@@ -26,16 +26,6 @@
           </v-row>
           <v-row>
             <v-col cols="2">
-              <v-subtitle>Password</v-subtitle>
-            </v-col>
-            <v-col cols="8">
-              <p class="text-subtitle">
-                {{  confirmData.password  }}
-              </p>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="2">
               <v-subtitle>Type</v-subtitle>
             </v-col>
             <v-col cols="8">
@@ -73,17 +63,14 @@
             </v-col>
           </v-row>
 
-          <nuxt-link :to="`/user/${confirmData.id}/edit`"><a href="#">Edit</a></nuxt-link>
+          <nuxt-link :to="`/user/${confirmData.id}/edit`"><a href="#"><v-btn name="submit-btn">Edit</v-btn></a></nuxt-link>
+          
         </v-form>
       </v-col>
       <v-col cols="3">
-        <img :src="`${confirmData.profile}`" style="width: 100%;  float: left; margin-right: 10px;" />
-
+        <img v-if="url" :src="`${confirmData.profile}`" style="width: 100%;  float: left; margin-right: 10px;" />
       </v-col>
     </v-row>
-
-    <!-- <v-row> -->
-    <!-- </v-row> -->
   </div>
 </template>
   
@@ -104,6 +91,7 @@ export default {
         dob: '',
         profile: ''
       },
+      url: '',
       valid: false,
       ...validations
     }
@@ -113,7 +101,8 @@ export default {
     await this.$axios.
       $get(`/users?email=${loginMail}`).then((data) => {
         if (data) {
-          this.confirmData = data[0]
+          this.confirmData = data[0];
+          this.url = this.confirmData.profile;
         }
       })
     console.log(this.confirmData)

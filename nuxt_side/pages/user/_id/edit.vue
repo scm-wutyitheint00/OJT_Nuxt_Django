@@ -3,7 +3,7 @@
         <v-form>
             <v-row>
                 <h1 class="title">
-                    Create User
+                    Edit User
                 </h1>
             </v-row>
             <v-row>
@@ -34,19 +34,10 @@
             </v-row>
             <v-row>
                 <v-col class="ma-0 pa-3" cols="2">
-                    <v-subtitle>Confirm Password</v-subtitle>
-                </v-col>
-                <v-col class="ma-0 pa-3" cols="8">
-                    <v-text-field outlined v-model="user.confirmPassword" label="Confirm Password" type="password"
-                        :rules="[required('confirmPassword')]" />
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col class="ma-0 pa-3" cols="2">
                     <v-subtitle>Type</v-subtitle>
                 </v-col>
                 <v-col class="ma-0 pa-3" cols="8">
-                    <v-select :items="items" outlined v-model="user.type" :rules="[required('type')]"></v-select>
+                    <v-select :items="items" outlined v-model="user.type" ></v-select>
                 </v-col>
             </v-row>
 
@@ -93,7 +84,7 @@
                 <v-col class="ma-0 pa-3" cols="2">
                     <v-subtitle>Profile</v-subtitle>
                 </v-col>
-                <v-col class="ma-0 pa-3" cols="8">
+                <v-col class="ma-0 pa-3 text-left" cols="8">
                     <input type="file" accept=".jpeg,.jpg,.png,image/jpeg,image/png" aria-label="upload image button"
                         @change="selectFile" />
                 </v-col>
@@ -161,9 +152,14 @@ export default {
                 headers: { "content-type": "multipart/form-data" }
             };
             let formData = new FormData();
+            console.log(this.user.profile)
             for (let data in userData) {
                 formData.append(data, userData[data]);
-                formData.append("file", this.user.profile);
+                if (typeof this.user.profile === 'string') {
+                    this.$delete(userData, 'profile');
+                } else {
+                    formData.append("file", this.user.profile);
+                }
             }
             try {
                 let response = await this.$axios.$patch(`/users/${userData.id}/`, formData, config);

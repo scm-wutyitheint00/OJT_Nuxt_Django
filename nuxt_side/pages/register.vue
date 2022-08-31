@@ -11,15 +11,7 @@
             <v-text-field v-model="userData.password" label="Enter your password"
               :rules="[required('password'), minLenght('password', 8)]" :append-icon="
                 userData.showPassword ? 'mdi-eye' : 'mdi-eye-off'
-              " :type="userData.showPassword ? 'text' : 'password'" @click:append="
-  userData.showPassword = !userData.showPassword
-"></v-text-field>
-            <!-- <v-text-field v-model="userData.password2" label="Confirm password" :append-icon="
-              userData.showPassword2 ? 'mdi-eye' : 'mdi-eye-off'
-            " :type="userData.showPassword2 ? 'text' : 'password'"
-              :rules="[required('confirm password'), minLenght('password', 8)]" @click:append="
-                userData.showPassword2 = !userData.showPassword2
-              "></v-text-field> -->
+              " :type="userData.showPassword ? 'text' : 'password'" @click:append="userData.showPassword = !userData.showPassword"></v-text-field>
             <v-select :items="items" label="User Type" v-model="userData.type" :rules="[required('user type')]">
             </v-select>
             <p class="red--text" v-if="!userData.valid">{{  userData.error  }}</p>
@@ -55,6 +47,8 @@ export default {
     async createUser(userData) {
       userData.name = this.name;
       userData.type = userData.type === 'Admin' ? 1: 2;
+      userData.created_at = new Date().toISOString();
+      userData.updated_at = new Date().toISOString();
       const config = {
         headers: { "content-type": "multipart/form-data" }
       };
@@ -74,6 +68,7 @@ export default {
             }).then(async () => {
               await this.createUser(registrationInfo);
               this.$router.push('/');
+              this.$auth.logout();
             }
             )
           })
@@ -84,7 +79,6 @@ export default {
               this.userData.error = error.response.data.email[0];
             }
           })
-
     },
   },
 }

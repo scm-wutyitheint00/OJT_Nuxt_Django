@@ -74,12 +74,11 @@
         {{  item.address  }}
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
-        {{  (new Date(Date.now() - (new Date(item.created_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) 
+        {{  changeDateFormat(item.created_at) 
         }}
       </template>
       <template v-slot:[`item.updated_at`]="{ item }">
-        {{  (new Date(Date.now() - (new Date(item.updated_at)).getTimezoneOffset() * 60000)).toISOString().substr(0, 10) 
-        }}
+        {{  changeDateFormat(item.updated_at)  }}
       </template>
       <template v-slot:[`item.delete`]="{ item }">
         <a v-if="isMember === 'false'" @click="deleteId = item.id, deleteDialog = true">Delete</a>
@@ -101,7 +100,7 @@
                 <span class="text-subtitle-1 text--primary">Name</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.userDetail.name }}</span>
+                <span class="text-subtitle-1 text--primary">{{  this.userDetail.name  }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -109,7 +108,7 @@
                 <span class="text-subtitle-1 text--primary">Email</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.userDetail.email }}</span>
+                <span class="text-subtitle-1 text--primary">{{  this.userDetail.email  }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -117,7 +116,7 @@
                 <span class="text-subtitle-1 text--primary">Birth Date</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.userDetail.dob }}</span>
+                <span class="text-subtitle-1 text--primary">{{  this.userDetail.dob  }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -125,7 +124,7 @@
                 <span class="text-subtitle-1 text--primary">Phone</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.userDetail.phone }}</span>
+                <span class="text-subtitle-1 text--primary">{{  this.userDetail.phone  }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -133,7 +132,7 @@
                 <span class="text-subtitle-1 text--primary">Address</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.userDetail.address }}</span>
+                <span class="text-subtitle-1 text--primary">{{  this.userDetail.address  }}</span>
               </v-col>
             </v-row>
             <v-row justify="center">
@@ -141,7 +140,8 @@
                 <span class="text-subtitle-1 text--primary">Profile</span>
               </v-col>
               <v-col cols="7">
-                <span class="text-subtitle-1 text--primary">{{ this.userDetail.profile }}</span>
+                <img v-if="url" :src="`${this.userDetail.profile}`"
+                  style="width: 100%;  float: left; margin-right: 10px;" />
               </v-col>
             </v-row>
           </v-container>
@@ -212,6 +212,7 @@ export default {
         modal2: false,
         menu2: false,
       },
+      url: ''
     }
   },
 
@@ -262,7 +263,13 @@ export default {
     },
     async showUserDetail(userId) {
       this.userDetail = await this.$axios.$get(`/users/${userId}`);
+      console.log('profile', this.userDetail.profile)
+      this.url = this.userDetail.profile;
       this.detailDialog = true;
+    },
+    changeDateFormat(data) {
+      var dateData = new Date(data)
+      return dateData.getFullYear() + "/" + ("0" + dateData.getDate()).slice(-2) + "/" + ("0" + (dateData.getMonth() + 1)).slice(-2);
     }
   }
 }

@@ -9,9 +9,7 @@
               :rules="[required('email'), emailFormat()]"></v-text-field>
             <v-text-field v-model="loginInfo.password" label="Enter your password"
               :rules="[required('password'), minLenght('password', 8)]" :append-icon="
-                loginInfo.showPassword ? 'mdi-eye' : 'mdi-eye-off'
-              " :type="loginInfo.showPassword ? 'text' : 'password'" @click:append="
-loginInfo.showPassword = !loginInfo.showPassword"></v-text-field>
+                loginInfo.showPassword ? 'mdi-eye' : 'mdi-eye-off'" :type="loginInfo.showPassword ? 'text' : 'password'" @click:append="loginInfo.showPassword = !loginInfo.showPassword"></v-text-field>
             <v-layout justify-end>
               <a href="">Forgot Password</a>
             </v-layout>
@@ -21,7 +19,6 @@ loginInfo.showPassword = !loginInfo.showPassword"></v-text-field>
         </v-flex>
       </v-layout>
     </v-container>
-
   </div>
 </template>
 
@@ -50,30 +47,23 @@ export default {
       await this.$axios
         .$get(`/users?email=${mailData}`)
         .then((response) => {
-          console.log('response', response)
           localStorage.setItem('responseData', JSON.stringify(response[0]));
-
-          if(response && response[0].type === "1") {
+          if (response && response[0].type === "1") {
             this.$store.commit('SET_MEMBER', false);
             localStorage.setItem("isMember", false);
           } else {
             this.$store.commit('SET_MEMBER', true);
             localStorage.setItem("isMember", true);
           }
-          
-
         })
-        this.$router.push('/post');
+      this.$router.push('/post');
     },
     async loginUser(userData) {
       try {
         await this.$auth.loginWith('local', {
           data: userData,
-        }).then( data => {
-          console.log(data);
-
+        }).then(data => {
           localStorage.setItem('loginEmail', userData.email);
-
           localStorage.setItem("lastOperationDate", new Date().toString());
         });
         await this.isAdmin(userData.email);

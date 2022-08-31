@@ -5,21 +5,21 @@
     </h1>
     <v-form>
       <v-row>
-        <v-col cols="2">
-          <v-subheader>Title</v-subheader>
+        <v-col cols="4">
+          <v-subtitle>Title</v-subtitle>
         </v-col>
-        <v-col cols="8">
-          <p class="text-subtitle-2" value="this.confirmData.title">
+        <v-col class="text-left" cols="5">
+          <p class="text-subtitle" value="this.confirmData.title">
             {{ $store.state.posts.title }}
           </p>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="2">
-          <v-subheader>Description</v-subheader>
+        <v-col cols="4">
+          <v-subtitle>Description</v-subtitle>
         </v-col>
-        <v-col cols="8">
-          <p class="text-subtitle-2" value="this.confirmData.description">
+        <v-col  class="text-left" cols="5">
+          <p class="text-subtitle" value="this.confirmData.description">
             {{ $store.state.posts.description }}
           </p>
         </v-col>
@@ -84,5 +84,8 @@ export default {
 <style>
 h1 {
   margin-bottom: 100px;
+}
+v-row {
+  margin-bottom: 30px;
 }
 </style>

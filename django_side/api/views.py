@@ -20,7 +20,7 @@ class UserViewSet(viewsets.ModelViewSet):
     filterset_fields = ['name', 'email']
 
 class PostViewSet(viewsets.ModelViewSet):
-    # permission_classes = (IsAuthenticated,)  
+    permission_classes = (IsAuthenticated,)  
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     filter_backends = [filters.SearchFilter]

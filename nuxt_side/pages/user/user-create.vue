@@ -34,15 +34,6 @@
       </v-row>
       <v-row>
         <v-col class="ma-0 pa-3" cols="2">
-          <v-subtitle>Confirm Password</v-subtitle>
-        </v-col>
-        <v-col class="ma-0 pa-3" cols="8">
-          <v-text-field outlined v-model="user.confirmPassword" label="Confirm Password" type="password"
-            :rules="[required('confirmPassword')]" />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="ma-0 pa-3" cols="2">
           <v-subtitle>Type</v-subtitle>
         </v-col>
         <v-col class="ma-0 pa-3" cols="8">
@@ -92,9 +83,13 @@
         <v-col class="ma-0 pa-3" cols="2">
           <v-subtitle>Profile</v-subtitle>
         </v-col>
-        <v-col class="ma-0 pa-3" cols="8">
+        <v-col class="ma-0 pa-3 text-left" cols="8">
           <input type="file" accept=".jpeg,.jpg,.png,image/jpeg,image/png" aria-label="upload image button"
             @change="selectFile" />
+
+          <div id="preview">
+            <img v-if="url" :src="url" />
+          </div>
         </v-col>
       </v-row>
       <v-btn name="submit-btn" @click="confirmPost">Confirm</v-btn>
@@ -133,6 +128,7 @@ export default {
       },
       imageData: '',
       items: ['Admin', 'User'],
+      url: '',
       ...validations
     };
   },
@@ -157,6 +153,7 @@ export default {
       const file = e.target.files[0];
       if (!file) return;
       this.user.profile = file;
+      this.url = URL.createObjectURL(file);
     }
   }
 };
@@ -165,5 +162,14 @@ export default {
 <style scoped>
 .col .col-8 {
   padding: 0 !important;
+}
+
+.form {
+  margin-bottom: 20px;
+}
+
+#preview img {
+  max-width: 100%;
+  max-height: 500px;
 }
 </style>

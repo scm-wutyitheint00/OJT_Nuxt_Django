@@ -20,14 +20,6 @@
           <v-textarea v-model="post.description" label="Description" :rules="[required('description')]" type="text" />
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="2">
-          <v-subheader>Status</v-subheader>
-        </v-col>
-        <v-col cols="8">
-          <v-checkbox v-model="ex4" color="info" value="info" hide-details></v-checkbox>
-        </v-col>
-      </v-row>
 
       <v-btn name="submit-btn" @click="submitPost(post)">Confirm</v-btn>
       <v-btn name="submit-btn" @click="clearData">Clear</v-btn>
