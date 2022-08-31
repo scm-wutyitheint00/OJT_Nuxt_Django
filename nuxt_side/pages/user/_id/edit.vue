@@ -37,7 +37,7 @@
                     <v-subtitle>Type</v-subtitle>
                 </v-col>
                 <v-col class="ma-0 pa-3" cols="8">
-                    <v-select :items="items" outlined v-model="user.type" ></v-select>
+                    <v-select :items="items" outlined v-model="user.type"></v-select>
                 </v-col>
             </v-row>
 
@@ -87,6 +87,9 @@
                 <v-col class="ma-0 pa-3 text-left" cols="8">
                     <input type="file" accept=".jpeg,.jpg,.png,image/jpeg,image/png" aria-label="upload image button"
                         @change="selectFile" />
+                    <div id="preview">
+                        <img v-if="url" :src="url" />
+                    </div>
                 </v-col>
             </v-row>
             <v-btn name="submit-btn" @click="updatePost">Update</v-btn>
@@ -132,6 +135,7 @@ export default {
                 menu2: false,
             },
             items: ['Admin', 'User'],
+            url: '',
             ...validations
         };
     },
@@ -183,6 +187,7 @@ export default {
             const file = e.target.files[0];
             if (!file) return;
             this.user.profile = file;
+            this.url = URL.createObjectURL(file);
         }
     }
 };
