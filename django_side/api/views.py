@@ -73,11 +73,19 @@ def index(request):
 
 
 def send_email(request):
-    send_mail(
-        'Password Reset Mail',
-        'We heard that you lost your password. Please reset your password with the following link',
-        'ayu422261@gmail.com',
-        ['wutyitheint99@gmail.com', 'scm.wutyitheint@gmail.com'],
-        fail_silently=False,
-    )
-    return HttpResponse("success.")
+    parseMail = request.GET["email"]
+    queryset = User.objects.filter(email=parseMail)
+    returnMsg = ''
+    if not queryset:
+        returnMsg = 'fail'
+    else:
+        send_mail(
+            'Password Reset Mail',
+            'We heard that you lost your password. Please reset your password with the following link',
+            'ayu422261@gmail.com',
+            [request.GET["email"]],
+            fail_silently=False,
+        )
+        returnMsg = 'success'
+    
+    return HttpResponse(returnMsg)
