@@ -1,5 +1,5 @@
 from rest_framework import serializers, validators
-from .models import Post, User
+from .models import Post, ResetPasswordToken, User
 from django.contrib.auth import get_user_model
 CustomUser = get_user_model()
 class PostSerializer(serializers.ModelSerializer):
@@ -44,3 +44,12 @@ class CustomUserRetrieveSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('first_name', 'last_name', 'email',
                   'bio', 'gender', 'birth_date', 'id')
+
+class PasswordTokenSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(required=False)
+    token = serializers.CharField(required=False)
+    createdd_at = serializers.CharField(required=False)
+
+    class Meta:
+        model = ResetPasswordToken
+        fields = ('email', 'token', 'created_at')

@@ -35,6 +35,11 @@ class Post(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+class ResetPasswordToken(models.Model):
+    email = models.CharField(max_length=254)
+    token = models.TextField()
+    created_at = models.DateTimeField(null=False, blank=False)
+
 
 
 class CustomUser(AbstractUser):
@@ -49,7 +54,6 @@ class CustomUser(AbstractUser):
         )
     )
 
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -57,3 +61,4 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.email}'s custom account"
+
