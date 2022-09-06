@@ -101,7 +101,6 @@ def send_email(request):
             t.token = code
             t.created_at = datetime.datetime.now(tz=timezone.utc)
             t.save()
-            print('e----------------', t)
 
         # update exisiting token
         else:
@@ -136,7 +135,7 @@ def send_password_reset_mail(request):
         return Response('invalid code!', status=status.HTTP_400_BAD_REQUEST)
 
     if timezone.now() - existToken.created_at > settings.CODE_EXPIRATION_TIME:
-        return Response('token is expire!', status=status.HTTP_400_BAD_REQUEST)
+        return Response('token is expired!', status=status.HTTP_400_BAD_REQUEST)
 
     return Response()
 
